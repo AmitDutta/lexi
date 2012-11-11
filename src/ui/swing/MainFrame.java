@@ -126,8 +126,12 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 			KeyPressedEventArgs param = new KeyPressedEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
 					this.getContentPane().getHeight(), e, this.getFont());
 			this.controller.onKeyPressed(param);
+			ViewEventArgs args = new ViewEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getWidth(),
+					this.getHeight());
 			if (e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN){
-				this.repaint();
+				//if (this.controller.getLogicalDocument().needScrolling(args)){
+					this.repaint();
+				//}
 			}
 	}
 
@@ -144,6 +148,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 				this.getHeight());
 		List<Row> rows = this.compositor.compose(this.document.getChildren(), param);
 		// this.controller.getLogicalDocument().setRows(rows);
+		System.out.println("-->");
 		this.controller.getLogicalDocument().draw(rows, param);
 		//this.controller.onComponentResized(param);
 	}
@@ -172,16 +177,9 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 				this.getContentPane().getHeight());
 		List<Row> rows = this.compositor.compose(args.getGlyphs(), param);
 		// this.controller.getLogicalDocument().setRows(rows);
-		this.controller.getLogicalDocument().draw(rows, param);
-		// this.updateUi();
+		this.controller.getLogicalDocument().draw(rows, param);		
 	}
-	
-	public void updateUi(){
-		/*for(Row row : this.rows){
-			row.draw(new SwingGraphics(this.getGraphics()), row.getLeft(), row.getTop());
-		}*/
-	}
-	
+		
 	@Override
 	public void windowOpened(WindowEvent e) {
 		// TODO Auto-generated method stub

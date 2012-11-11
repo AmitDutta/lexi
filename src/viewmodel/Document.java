@@ -27,6 +27,8 @@ public abstract class Document {
 		this.rows = rows;
 	}
 	
+	public abstract void setIndex(int index);
+	
 	public abstract void draw(List<Row> rows, ViewEventArgs args);
 	
 	public abstract void draw(List<Row> rows, ViewEventArgs args, int from);

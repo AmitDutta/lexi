@@ -35,19 +35,22 @@ public class EditorController implements IEditorController{
 			if (this.logicalDocument.needScrolling(param)){
 				if (index > 0){
 					index -= 1;
+					this.logicalDocument.setIndex(index);
 				}
 				
-				this.logicalDocument = new ScrollableDocument(this.logicalDocument, this.index);
+				//this.logicalDocument = new ScrollableDocument(this.logicalDocument, this.index);
 			}
 		}
 		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_PAGE_DOWN){
-			System.out.println(this.logicalDocument.needScrolling(param));
+			System.out.println("at controller: need scrolling? " + this.logicalDocument.needScrolling(param));
+			System.out.println("index: " + this.index + " logical rows count: " + this.logicalDocument.getRows().size());
 			if (this.logicalDocument.needScrolling(param)){
 				if (index < (this.logicalDocument.getRows().size() - 1)){
 					index += 1;
-				}
+					this.logicalDocument.setIndex(index);
+				}				
 				
-				this.logicalDocument = new ScrollableDocument(this.logicalDocument, this.index);
+				//this.logicalDocument = new ScrollableDocument(this.logicalDocument, this.index);
 			}			
 		}
 		else{			

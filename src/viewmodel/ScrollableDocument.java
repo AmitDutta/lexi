@@ -31,6 +31,7 @@ public class ScrollableDocument extends DocumentDecorator{
 			this.from = 0;
 		}
 		
+		
 		if (this.needScrolling(args)){
 			this.draw(rows, args, from);
 		}
@@ -40,9 +41,17 @@ public class ScrollableDocument extends DocumentDecorator{
 	}
 	
 	@Override
+	public void setIndex(int index){
+		this.from = index;
+	}
+	
+	@Override
 	public void draw(List<Row> rows, ViewEventArgs args, int from){
 		this.setRows(rows);
-		this.document.draw(rows, args, from);
+		this.from = from;
+		System.out.println("at decorator: from: " + this.from + " rows: " + this.rows.size());
+		this.document.draw(rows, args, this.from);
+		System.out.println("AFTER: at decorator: from: " + this.from + " rows: " + this.rows.size());
 	}
 	
 	@Override

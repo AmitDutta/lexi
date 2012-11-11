@@ -18,6 +18,7 @@ public class ConcreteDocument extends Document{
 		//System.out.println(rows.size() + " " + this.getRows().size());
 		if (this.getRows() != null && this.getRows().size() > 0){
 			int currentTop = args.getTop();
+			System.out.println("at main draw: from: "  + from + " row size: " + this.getRows().size()  );
 			for (int i = from; i < this.getRows().size(); i++){				
 				Row row = this.getRows().get(i);
 				row.draw(args.getGraphics(), args.getLeft(), currentTop);				
@@ -29,5 +30,11 @@ public class ConcreteDocument extends Document{
 	@Override
 	public Boolean needScrolling(ViewEventArgs args){
 		return false;
+	}
+
+	@Override
+	public void setIndex(int index) {
+		// TODO Auto-generated method stub		
+		System.out.println("here at concrete setindex!!");
 	}
 }

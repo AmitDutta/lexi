@@ -15,8 +15,8 @@ public class Application {
 					Composition document = new Composition();
 					IEditorController controller = new EditorController(document);
 					new ui.swing.MainFrame(document, controller);
-					IEditorController controller2 = new EditorController(document);
-					new ui.swing.MainFrame(document, controller2);
+					/*IEditorController controller2 = new EditorController(document);
+					new ui.swing.MainFrame(document, controller2);*/
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
