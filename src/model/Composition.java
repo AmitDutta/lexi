@@ -48,7 +48,7 @@ public class Composition implements ISubject{
 	public void notifyObservers() {
 		ModelChangedEventArgs args = new ModelChangedEventArgs(this.getChildren());
 		for(IObserver observer : this.observers){
-			observer.update(args);
+			observer.updateObserver(args);
 		}
 	}
 	

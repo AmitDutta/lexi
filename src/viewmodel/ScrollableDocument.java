@@ -7,13 +7,11 @@ import model.*;
 
 public class ScrollableDocument extends DocumentDecorator{
 	
-	private Document document;
-	private int from;
+	private Document document;	
 	private List<Row> rows;
 	
-	public ScrollableDocument(Document document, int from){
-		this.document = document;
-		this.from = from;
+	public ScrollableDocument(Document document){
+		this.document = document;		
 		this.rows = this.document.getRows();
 	}
 	
@@ -26,32 +24,15 @@ public class ScrollableDocument extends DocumentDecorator{
 	}
 	
 	@Override
-	public void draw(List<Row> rows, ViewEventArgs args){		
-		if (this.from >= this.rows.size()){
-			this.from = 0;
+	public void draw(List<Row> rows, ViewEventArgs args, int from1){
+		if (from1 >= rows.size()){
+			from1 = 0;
 		}
 		
-		
-		if (this.needScrolling(args)){
-			this.draw(rows, args, from);
-		}
-		else{
-			this.draw(rows, args, 0);
-		}
-	}
-	
-	@Override
-	public void setIndex(int index){
-		this.from = index;
-	}
-	
-	@Override
-	public void draw(List<Row> rows, ViewEventArgs args, int from){
-		this.setRows(rows);
-		this.from = from;
-		System.out.println("at decorator: from: " + this.from + " rows: " + this.rows.size());
-		this.document.draw(rows, args, this.from);
-		System.out.println("AFTER: at decorator: from: " + this.from + " rows: " + this.rows.size());
+		this.setRows(rows);		
+		System.out.println("at decorator: from: " + from1 + " rows: " + rows.size());
+		this.document.draw(rows, args, from1);
+		System.out.println("AFTER: at decorator: from: " + from1 + " rows: " + rows.size());
 	}
 	
 	@Override

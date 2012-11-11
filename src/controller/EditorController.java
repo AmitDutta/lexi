@@ -11,7 +11,7 @@ public class EditorController implements IEditorController{
 	
 	private Composition document;
 	private Document logicalDocument;
-	private int index;
+	public int index;
 	
 	public EditorController(Composition document){
 		this.index = 0;
@@ -35,7 +35,7 @@ public class EditorController implements IEditorController{
 			if (this.logicalDocument.needScrolling(param)){
 				if (index > 0){
 					index -= 1;
-					this.logicalDocument.setIndex(index);
+					//this.logicalDocument.setIndex(index);
 				}
 				
 				//this.logicalDocument = new ScrollableDocument(this.logicalDocument, this.index);
@@ -47,7 +47,7 @@ public class EditorController implements IEditorController{
 			if (this.logicalDocument.needScrolling(param)){
 				if (index < (this.logicalDocument.getRows().size() - 1)){
 					index += 1;
-					this.logicalDocument.setIndex(index);
+					//this.logicalDocument.setIndex(index);
 				}				
 				
 				//this.logicalDocument = new ScrollableDocument(this.logicalDocument, this.index);
@@ -74,14 +74,21 @@ public class EditorController implements IEditorController{
 	public void onMenuItemPressed(MenuPressedEventArgs param){
 		if (param.getMenuItem().getText() == Constants.ScrollOnText){
 			// turn on scrolling
-			this.logicalDocument = new ScrollableDocument(this.logicalDocument, 0);
+			this.logicalDocument = new ScrollableDocument(this.logicalDocument);
 		}
 		else{
 			// turn scrolling off
 			List<Row> rows = this.logicalDocument.getRows();
 			this.logicalDocument = new ConcreteDocument();
 			this.logicalDocument.setRows(rows);
+			this.index = 0;
 		}
+	}
+	
+	@Override
+	public void handleDrawing(List<Row> rows, ViewEventArgs args){
+		System.out.println("at controller handledrawing!!");
+		this.logicalDocument.draw(rows, args, this.index);
 	}
 	
 	@Override

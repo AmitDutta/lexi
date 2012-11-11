@@ -48,7 +48,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		
 		this.setTitle("Lexi - " + this.getNow());		
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.setBounds(100, 100, 450, 300);
+		this.setBounds(100, 100, 200, 200);
 		this.setLayout(new BorderLayout());
 		
 		JMenuBar menuBar = new JMenuBar();		
@@ -98,8 +98,11 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		this.repaint();
 	}
 
+	private Boolean fromResize = false;
+	
 	@Override
 	public void componentMoved(ComponentEvent e) {
+		fromResize = true;
 		this.repaint();
 	}
 
@@ -121,6 +124,8 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		
 	}
 
+	private Boolean scrollOn = false;
+	
 	@Override
 	public void keyPressed(KeyEvent e) {		
 			KeyPressedEventArgs param = new KeyPressedEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
@@ -128,10 +133,11 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 			this.controller.onKeyPressed(param);
 			ViewEventArgs args = new ViewEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getWidth(),
 					this.getHeight());
-			if (e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN){
-				//if (this.controller.getLogicalDocument().needScrolling(args)){
-					this.repaint();
-				//}
+			if ((e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) && this.scrollOn){
+				/* This is required because page up and down are not added to glyph model. So, the view update will never
+				 * be called and then no repaint. So, if these control keys are pressed, we need to manually repaint and update the 
+				 * view if the scroll is on. */
+				this.repaint();
 			}
 	}
 
@@ -142,14 +148,37 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	}
 	
 	@Override
+	public void updateObserver(ModelChangedEventArgs args) {	
+		ViewEventArgs param = new ViewEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
+				this.getContentPane().getHeight());
+		List<Row> rows = this.compositor.compose(args.getGlyphs(), param);
+		// this.controller.getLogicalDocument().setRows(rows);
+		//this.controller.getLogicalDocument().draw(rows, param);
+		System.out.println("at view update !!!");
+		this.controller.handleDrawing(rows, param);
+		
+	}	
+	
+	@Override
+	public void update(Graphics g){
+		paint(g);
+	}
+	
+	@Override
 	public void paint(Graphics g){
 		super.paint(g);
 		ViewEventArgs param = new ViewEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getWidth(),
 				this.getHeight());
 		List<Row> rows = this.compositor.compose(this.document.getChildren(), param);
 		// this.controller.getLogicalDocument().setRows(rows);
-		System.out.println("-->");
-		this.controller.getLogicalDocument().draw(rows, param);
+		System.out.println("from view -->");
+		//this.controller.getLogicalDocument().draw(rows, param);
+		if (fromResize){
+			fromResize = false;
+			((EditorController)this.controller).index = 0;
+		}
+		
+		this.controller.handleDrawing(rows, param);
 		//this.controller.onComponentResized(param);
 	}
 	
@@ -169,17 +198,8 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 			this.document.removeObserver(this);
 			this.dispose();
 		}
-	}
-	
-	@Override
-	public void update(ModelChangedEventArgs args) {	
-		ViewEventArgs param = new ViewEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
-				this.getContentPane().getHeight());
-		List<Row> rows = this.compositor.compose(args.getGlyphs(), param);
-		// this.controller.getLogicalDocument().setRows(rows);
-		this.controller.getLogicalDocument().draw(rows, param);		
-	}
-		
+	}	
+
 	@Override
 	public void windowOpened(WindowEvent e) {
 		// TODO Auto-generated method stub
@@ -223,9 +243,11 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		this.controller.onMenuItemPressed(new MenuPressedEventArgs(this.scrollMenuItem));
 		if (this.scrollMenuItem.getText() == Constants.ScrollOffText){
 			this.scrollMenuItem.setText(Constants.ScrollOnText);
+			scrollOn = false;
 		}
 		else{
 			this.scrollMenuItem.setText(Constants.ScrollOffText);
+			scrollOn = true;
 		}
 		
 		this.repaint();
