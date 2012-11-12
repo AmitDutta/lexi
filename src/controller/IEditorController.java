@@ -11,5 +11,6 @@ public interface IEditorController {
 	void onImageInserted(InsertImageEventArgs param);
 	void onMenuItemPressed(MenuPressedEventArgs param);
 	void handleDrawing(List<Row> rows, ViewEventArgs param);
+	void handleResize();
 	Document getLogicalDocument();
 }

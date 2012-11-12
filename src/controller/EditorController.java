@@ -11,10 +11,10 @@ public class EditorController implements IEditorController{
 	
 	private Composition document;
 	private Document logicalDocument;
-	public int index;
+	public int index;	
 	
 	public EditorController(Composition document){
-		this.index = 0;
+		this.index = 0;		
 		this.document = document;
 		this.logicalDocument = new ConcreteDocument();
 	}
@@ -33,24 +33,19 @@ public class EditorController implements IEditorController{
 		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_PAGE_UP){
 			System.out.println(this.logicalDocument.needScrolling(param));
 			if (this.logicalDocument.needScrolling(param)){
+			
 				if (index > 0){
 					index -= 1;
-					//this.logicalDocument.setIndex(index);
 				}
-				
-				//this.logicalDocument = new ScrollableDocument(this.logicalDocument, this.index);
 			}
 		}
 		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_PAGE_DOWN){
 			System.out.println("at controller: need scrolling? " + this.logicalDocument.needScrolling(param));
-			System.out.println("index: " + this.index + " logical rows count: " + this.logicalDocument.getRows().size());
+			System.out.println("iasndex: " + this.index + " logical rows count: " + this.logicalDocument.getRows().size());
 			if (this.logicalDocument.needScrolling(param)){
 				if (index < (this.logicalDocument.getRows().size() - 1)){
-					index += 1;
-					//this.logicalDocument.setIndex(index);
-				}				
-				
-				//this.logicalDocument = new ScrollableDocument(this.logicalDocument, this.index);
+					index += 1;					
+				}
 			}			
 		}
 		else{			
@@ -59,9 +54,6 @@ public class EditorController implements IEditorController{
 				this.document.insert(glyph, this.document.getChildren().size(), param);
 			}			
 		}
-		
-		//Glyph glyph = new Char(param.getKeyEvent().getKeyChar(), param.getFont());
-		//this.document.insert(glyph, this.document.getChildren().size(), param);
 	}
 
 	@Override
@@ -87,12 +79,17 @@ public class EditorController implements IEditorController{
 	
 	@Override
 	public void handleDrawing(List<Row> rows, ViewEventArgs args){
-		System.out.println("at controller handledrawing!!");
+		// System.out.println("at controller handledrawing!!");
 		this.logicalDocument.draw(rows, args, this.index);
 	}
 	
 	@Override
 	public Document getLogicalDocument(){		
 		return this.logicalDocument;
+	}
+	
+	@Override
+	public void handleResize(){
+		this.index = 0;
 	}
 }

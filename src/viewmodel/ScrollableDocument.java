@@ -24,15 +24,15 @@ public class ScrollableDocument extends DocumentDecorator{
 	}
 	
 	@Override
-	public void draw(List<Row> rows, ViewEventArgs args, int from1){
-		if (from1 >= rows.size()){
-			from1 = 0;
+	public void draw(List<Row> rows, ViewEventArgs args, int from){
+		if (from >= rows.size()){
+			from = 0;
 		}
 		
 		this.setRows(rows);		
-		System.out.println("at decorator: from: " + from1 + " rows: " + rows.size());
-		this.document.draw(rows, args, from1);
-		System.out.println("AFTER: at decorator: from: " + from1 + " rows: " + rows.size());
+		//System.out.println("at decorator: from: " + from + " rows: " + rows.size());
+		this.document.draw(rows, args, from);
+		//System.out.println("AFTER: at decorator: from: " + from + " rows: " + rows.size());
 	}
 	
 	@Override

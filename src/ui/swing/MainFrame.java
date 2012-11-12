@@ -75,16 +75,6 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		this.aboutMenuItem = new JMenuItem("About");
 		this.aboutMenuItem.addActionListener(this);
 		mnHelp.add(aboutMenuItem);
-		
-		// create the status bar panel and shove it down the bottom of the frame
-		/* JPanel statusPanel = new JPanel();
-		statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-		this.add(statusPanel, BorderLayout.SOUTH);
-		statusPanel.setPreferredSize(new Dimension(this.getWidth(), 16));
-		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
-		JLabel statusLabel = new JLabel("status");
-		statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		statusPanel.add(statusLabel); */
 				
 		this.addKeyListener(this);
 		this.addComponentListener(this);
@@ -94,16 +84,15 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	}	
 
 	@Override
-	public void componentResized(ComponentEvent e) {		
-		this.repaint();
+	public void componentResized(ComponentEvent e) {	
+		this.controller.handleResize();
+		this.repaint(1);
 	}
-
-	private Boolean fromResize = false;
 	
 	@Override
-	public void componentMoved(ComponentEvent e) {
-		fromResize = true;
-		this.repaint();
+	public void componentMoved(ComponentEvent e) {	
+		this.controller.handleResize();
+		this.repaint(1);
 	}
 
 	@Override
@@ -130,15 +119,15 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	public void keyPressed(KeyEvent e) {		
 			KeyPressedEventArgs param = new KeyPressedEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
 					this.getContentPane().getHeight(), e, this.getFont());
-			this.controller.onKeyPressed(param);
-			ViewEventArgs args = new ViewEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getWidth(),
-					this.getHeight());
+			this.controller.onKeyPressed(param);			
 			if ((e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) && this.scrollOn){
 				/* This is required because page up and down are not added to glyph model. So, the view update will never
 				 * be called and then no repaint. So, if these control keys are pressed, we need to manually repaint and update the 
 				 * view if the scroll is on. */
-				this.repaint();
+				
 			}
+			
+			this.repaint(1);
 	}
 
 	@Override
@@ -149,13 +138,12 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	
 	@Override
 	public void updateObserver(ModelChangedEventArgs args) {	
-		ViewEventArgs param = new ViewEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
+		/*ViewEventArgs param = new ViewEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
 				this.getContentPane().getHeight());
 		List<Row> rows = this.compositor.compose(args.getGlyphs(), param);
-		// this.controller.getLogicalDocument().setRows(rows);
-		//this.controller.getLogicalDocument().draw(rows, param);
-		System.out.println("at view update !!!");
-		this.controller.handleDrawing(rows, param);
+		// System.out.println("at view update !!!");
+		this.controller.handleDrawing(rows, param);*/
+		this.repaint(1);
 		
 	}	
 	
@@ -169,17 +157,9 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		super.paint(g);
 		ViewEventArgs param = new ViewEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getWidth(),
 				this.getHeight());
-		List<Row> rows = this.compositor.compose(this.document.getChildren(), param);
-		// this.controller.getLogicalDocument().setRows(rows);
-		System.out.println("from view -->");
-		//this.controller.getLogicalDocument().draw(rows, param);
-		if (fromResize){
-			fromResize = false;
-			((EditorController)this.controller).index = 0;
-		}
-		
-		this.controller.handleDrawing(rows, param);
-		//this.controller.onComponentResized(param);
+		List<Row> rows = this.compositor.compose(this.document.getChildren(), param);		
+		// System.out.println("from view -->");
+		this.controller.handleDrawing(rows, param);		
 	}
 	
 	@Override
