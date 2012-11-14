@@ -32,6 +32,11 @@ public class SwingGraphics implements ui.IGraphics {
 	
 	@Override
 	public void drawString(String str, int x, int y){
-		this.graphics.drawString(str, x, y);
+		this.graphics.drawString(str, x, y);		
+	}
+	
+	@Override
+	public void drawRect(int x, int y, int width, int height){
+		this.graphics.drawRect(x, y, width, height);
 	}
 }

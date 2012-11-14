@@ -7,6 +7,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
@@ -18,13 +20,12 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 
 import model.*;
 import controller.*;
 import util.*;
 
-public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, ComponentListener, ActionListener, IObserver, WindowListener{
+public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, ComponentListener, ActionListener, IObserver, WindowListener, MouseListener{
 		
 	private static final int TOP_MARGIN = 20;
 	private static final int LEFT_MARGIN = 5;	
@@ -34,9 +35,9 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	private JMenuItem imageMenuItem;
 	private JMenuItem aboutMenuItem;
 	private JMenuItem exitMenuItem;
-	private JMenuItem scrollMenuItem;
-	private List<Row> rows;
+	private JMenuItem scrollMenuItem;	
 	private ICompositor compositor;
+	private int x1, y1, x2, y2;
 	
 	public MainFrame(Composition document, IEditorController controller){		
 		super();		
@@ -79,8 +80,12 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		this.addKeyListener(this);
 		this.addComponentListener(this);
 		this.addWindowListener(this);
+		this.addMouseListener(this);
 		
 		this.setVisible(true);		
+		
+		this.x1 = this.y1 = -10;
+		this.x2 = this.y2 = -20;
 	}	
 
 	@Override
@@ -127,7 +132,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 				
 			}
 			
-			this.repaint(1);
+			this.repaint(1);			
 	}
 
 	@Override
@@ -145,6 +150,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		this.controller.handleDrawing(rows, param);*/
 		this.repaint(1);
 		
+		
 	}	
 	
 	@Override
@@ -159,7 +165,16 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 				this.getHeight());
 		List<Row> rows = this.compositor.compose(this.document.getChildren(), param);		
 		// System.out.println("from view -->");
-		this.controller.handleDrawing(rows, param);		
+		this.controller.handleDrawing(rows, param);	
+		
+		// draw selection
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setColor(Color.BLACK);
+		g2.setStroke(new BasicStroke(2));
+		g2.drawLine(x1, y1, x2, y1);
+		g2.drawLine(x2, y1, x2, y2);
+		g2.drawLine(x2, y2, x1, y2);
+		g2.drawLine(x1, y2, x1, y1);
 	}
 	
 	@Override
@@ -267,5 +282,36 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	
 	private int getTop(){
 		return this.getInsets().top + this.getJMenuBar().getHeight() + TOP_MARGIN;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		x1 = e.getX();
+		y1 = e.getY();			
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		x2 = e.getX();
+		y2 = e.getY();
+		this.repaint();
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}		
 }

@@ -3,14 +3,15 @@ package viewmodel;
 import java.util.List;
 
 import util.ViewEventArgs;
-import model.*;
 
-public class ScrollableDocument extends Document{
+import model.Row;
+
+public class BorderedDocument extends Document{
 	
 	private Document document;	
 	private List<Row> rows;
 	
-	public ScrollableDocument(Document document){
+	public BorderedDocument(Document document){
 		this.document = document;		
 		this.rows = this.document.getRows();
 	}
@@ -22,21 +23,16 @@ public class ScrollableDocument extends Document{
 	public void setRows(List<Row> rows){
 		this.rows = rows;
 	}
-	
+
 	@Override
-	public void draw(List<Row> rows, ViewEventArgs args, int from){
-		if (from >= rows.size()){
-			from = 0;
-		}
-		
-		this.setRows(rows);		
-		System.out.println("Scrollable: from: " + from + " rows: " + rows.size());
+	public void draw(List<Row> rows, ViewEventArgs args, int from) {
+		this.setRows(rows);
+		args.getGraphics().drawRect(args.getLeft() - 2, args.getTop() - 10, args.getFrameWidth() - 10, args.getFrameHeight() - 65);
 		this.document.draw(rows, args, from);
-		//System.out.println("AFTER: at decorator: from: " + from + " rows: " + rows.size());
 	}
-	
+
 	@Override
-	public Boolean needScrolling(ViewEventArgs args){		
+	public Boolean needScrolling(ViewEventArgs args) {		
 		Boolean needScrolling = false;
 		int totalHeight = 0;
 		for (Row row : this.document.getRows()){

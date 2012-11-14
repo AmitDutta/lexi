@@ -40,8 +40,8 @@ public class EditorController implements IEditorController{
 			}
 		}
 		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_PAGE_DOWN){
-			System.out.println("at controller: need scrolling? " + this.logicalDocument.needScrolling(param));
-			System.out.println("iasndex: " + this.index + " logical rows count: " + this.logicalDocument.getRows().size());
+			// System.out.println("at controller: need scrolling? " + this.logicalDocument.needScrolling(param));
+			// System.out.println("sndex: " + this.index + " logical rows count: " + this.logicalDocument.getRows().size());
 			if (this.logicalDocument.needScrolling(param)){
 				if (index < (this.logicalDocument.getRows().size() - 1)){
 					index += 1;					
@@ -66,7 +66,8 @@ public class EditorController implements IEditorController{
 	public void onMenuItemPressed(MenuPressedEventArgs param){
 		if (param.getMenuItem().getText() == Constants.ScrollOnText){
 			// turn on scrolling
-			this.logicalDocument = new ScrollableDocument(this.logicalDocument);
+			//this.logicalDocument = new ScrollableDocument(this.logicalDocument);
+			this.logicalDocument = new BorderedDocument(new ScrollableDocument(this.logicalDocument));
 		}
 		else{
 			// turn scrolling off
