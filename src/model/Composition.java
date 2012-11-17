@@ -8,13 +8,10 @@ public class Composition implements ISubject{
 
 	private List<Glyph> children;
 	private List<IObserver> observers;
-	private List<Row> rows;
-	private ICompositor compositor;
+	private List<Row> rows;	
 	
 	public Composition(){		
-		this.children = new ArrayList<Glyph>();
-		this.compositor = new SimpleCompositor();
-		this.compositor.setComposition(this);
+		this.children = new ArrayList<Glyph>();				
 		this.observers = new ArrayList<IObserver>();
 	}
 	

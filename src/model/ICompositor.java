@@ -5,6 +5,6 @@ import java.util.List;
 import util.*;
 
 public interface ICompositor {	
-	List<Row> compose(List<Glyph> glyphs, ViewEventArgs args);	
-	void setComposition(Composition glyph);
+	List<Row> compose(List<Glyph> glyphs, ViewEventArgs args);
+	
 }

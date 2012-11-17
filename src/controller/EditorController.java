@@ -66,8 +66,8 @@ public class EditorController implements IEditorController{
 	public void onMenuItemPressed(MenuPressedEventArgs param){
 		if (param.getMenuItem().getText() == Constants.ScrollOnText){
 			// turn on scrolling
-			//this.logicalDocument = new ScrollableDocument(this.logicalDocument);
-			this.logicalDocument = new BorderedDocument(new ScrollableDocument(this.logicalDocument));
+			this.logicalDocument = new ScrollableDocument(this.logicalDocument);
+			// this.logicalDocument = new BorderedDocument(new ScrollableDocument(this.logicalDocument));
 		}
 		else{
 			// turn scrolling off
