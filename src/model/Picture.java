@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import ui.IGraphics;
@@ -17,7 +18,7 @@ public class Picture extends Glyph {
 	}
 	
 	@Override
-	public void draw(IGraphics graphics, int x, int y){
+	public void draw(Graphics graphics, int x, int y){
 		graphics.drawImage(image, x, y, null);
 	}	
 	

@@ -5,13 +5,15 @@ import java.util.List;
 
 import model.*;
 import viewmodel.*;
+import sun.org.mozilla.javascript.internal.ast.ForInLoop;
 import util.*;
 
 public class EditorController implements IEditorController{
 	
 	private Composition document;
 	private Document logicalDocument;
-	public int index;	
+	public int index;
+	public SelectionRange selectionRange;
 	
 	public EditorController(Composition document){
 		this.index = 0;		
@@ -40,8 +42,8 @@ public class EditorController implements IEditorController{
 			}
 		}
 		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_PAGE_DOWN){
-			// System.out.println("at controller: need scrolling? " + this.logicalDocument.needScrolling(param));
-			// System.out.println("sndex: " + this.index + " logical rows count: " + this.logicalDocument.getRows().size());
+			System.out.println("at controller: need scrolling? " + this.logicalDocument.needScrolling(param));
+			 System.out.println("ndex: " + this.index + " logical rows count: " + this.logicalDocument.getRows().size());
 			if (this.logicalDocument.needScrolling(param)){
 				if (index < (this.logicalDocument.getRows().size() - 1)){
 					index += 1;					
@@ -66,8 +68,10 @@ public class EditorController implements IEditorController{
 	public void onMenuItemPressed(MenuPressedEventArgs param){
 		if (param.getMenuItem().getText() == Constants.ScrollOnText){
 			// turn on scrolling
+			List<Row> rows = this.logicalDocument.getRows();
 			this.logicalDocument = new ScrollableDocument(this.logicalDocument);
-			// this.logicalDocument = new BorderedDocument(new ScrollableDocument(this.logicalDocument));
+			//this.logicalDocument = new BorderedDocument(new ScrollableDocument(this.logicalDocument));
+			this.logicalDocument.setRows(rows);			
 		}
 		else{
 			// turn scrolling off
@@ -82,6 +86,27 @@ public class EditorController implements IEditorController{
 	public void handleDrawing(List<Row> rows, ViewEventArgs args){
 		// System.out.println("at controller handledrawing!!");
 		this.logicalDocument.draw(rows, args, this.index);
+		int start, end;		
+		if (this.selectionRange != null){
+			for (int i = this.selectionRange.getStartRow(); i <= this.selectionRange.getEndRow(); i++){
+				Row row = this.logicalDocument.getRows().get(i);
+				start = 0;
+				end = row.getUiGlyphs().size() - 1;
+				if (i == this.selectionRange.getStartRow()){
+					start = this.selectionRange.getStartCol();
+				}
+				
+				if (i == this.selectionRange.getEndRow()){
+					end = this.selectionRange.getEndCol();
+				}
+				
+				for (int p = start; p <= end; p++){
+					UiGlyph uiGlyph = row.getUiGlyphs().get(p);
+					Char ch = (Char)uiGlyph.getGlyph();
+					ch.select(args.getGraphics(), uiGlyph.getPosition().x, uiGlyph.getPosition().y);
+				}
+			}
+		}
 	}
 	
 	@Override

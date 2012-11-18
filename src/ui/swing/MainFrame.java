@@ -24,12 +24,14 @@ import javax.swing.*;
 import model.*;
 import controller.*;
 import util.*;
+import viewmodel.SelectionRange;
+import viewmodel.UiGlyph;
 
 public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, ComponentListener, ActionListener, IObserver, WindowListener, MouseListener{
 		
 	private static final int TOP_MARGIN = 20;
 	private static final int LEFT_MARGIN = 5;	
-	private IEditorController controller;
+	private EditorController controller;
 	private Composition document;
 	private JFileChooser jFileChooser;
 	private JMenuItem imageMenuItem;
@@ -39,7 +41,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	private ICompositor compositor;
 	private int x1, y1, x2, y2;
 	
-	public MainFrame(Composition document, IEditorController controller){		
+	public MainFrame(Composition document, EditorController controller){		
 		super();		
 		
 		this.document = document;
@@ -96,7 +98,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	
 	@Override
 	public void componentMoved(ComponentEvent e) {	
-		this.controller.handleResize();
+		/*this.controller.handleResize(); */
 		this.repaint(1);
 	}
 
@@ -122,7 +124,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	
 	@Override
 	public void keyPressed(KeyEvent e) {		
-			KeyPressedEventArgs param = new KeyPressedEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
+			KeyPressedEventArgs param = new KeyPressedEventArgs(this.getGraphics(), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
 					this.getContentPane().getHeight(), e, this.getFont());
 			this.controller.onKeyPressed(param);			
 			if ((e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) && this.scrollOn){
@@ -149,8 +151,6 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		// System.out.println("at view update !!!");
 		this.controller.handleDrawing(rows, param);*/
 		this.repaint(1);
-		
-		
 	}	
 	
 	@Override
@@ -161,20 +161,20 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	@Override
 	public void paint(Graphics g){
 		super.paint(g);
-		ViewEventArgs param = new ViewEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getWidth(),
+		ViewEventArgs param = new ViewEventArgs(this.getGraphics(), this.getTop(), this.getLeft(), this.getWidth(),
 				this.getHeight());
 		List<Row> rows = this.compositor.compose(this.document.getChildren(), param);		
 		// System.out.println("from view -->");
 		this.controller.handleDrawing(rows, param);	
 		
 		// draw selection
-		Graphics2D g2 = (Graphics2D) g;
+		/* Graphics2D g2 = (Graphics2D) g;
 		g2.setColor(Color.BLACK);
 		g2.setStroke(new BasicStroke(2));
 		g2.drawLine(x1, y1, x2, y1);
 		g2.drawLine(x2, y1, x2, y2);
 		g2.drawLine(x2, y2, x1, y2);
-		g2.drawLine(x1, y2, x1, y1);
+		g2.drawLine(x1, y2, x1, y1); */
 	}
 	
 	@Override
@@ -266,7 +266,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		if(this.getJFileChooser().showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
 			try {
 				BufferedImage image = ImageIO.read(this.getJFileChooser().getSelectedFile());
-				InsertImageEventArgs args = new InsertImageEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
+				InsertImageEventArgs args = new InsertImageEventArgs(this.getGraphics(), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
 						this.getContentPane().getHeight(), image);
 				this.controller.onImageInserted(args);
 				
@@ -295,12 +295,103 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		x1 = e.getX();
 		y1 = e.getY();			
 	}
-
+	
+	public  static int isGreater(Point p1, Point p2){
+		int i = 0;
+		if (p1.y > p2.y){
+			i = 1;
+		}
+		else if (p1.y < p2.y){
+			i = -1;
+		}
+		else if (p1.x < p2.x){
+			i = -1;
+		}
+		else if (p1.x > p2.x){
+			i = 1;
+		}
+		
+		return i;
+	}
+	
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		x2 = e.getX();
 		y2 = e.getY();
-		this.repaint();
+		
+		Point p1 = new Point(x1, y1);
+		Point p2 = new Point(x2, y2);		
+		if (this.isGreater(p2, p1) == -1){
+			// p1 is bigger
+			Point temp = p1;
+			p1 = p2;
+			p2 = temp;
+		}		
+		
+		// p2 needs to be greater than p1
+		
+		x1 = p1.x;
+		y1 = p1.y;
+		x2 = p2.x;
+		y2 = p2.y;
+		
+		int i, j, k, l, startRow, startCol, endRow, endCol;
+		i = j = k = l = 0;
+		List<Row> rows = this.controller.getLogicalDocument().getRows();
+		// System.out.println(rows.size());
+		
+		for (i = 0; i < rows.size(); i++){
+			Row row = rows.get(i);
+			if (row.getTop() > y1){
+				for (j = 0; j < row.getUiGlyphs().size(); j++){
+					UiGlyph glyph = row.getUiGlyphs().get(j);
+					// System.out.println("x: " + x1 + " pointx: " + glyph.getPosition().x);
+					if (glyph.getPosition().x > x1){
+						break;
+					}
+				}
+				
+				break;
+			}
+		}		
+		
+		SelectionRange range = new SelectionRange();
+		j = j == 0 ? j : j - 1;
+		range.setStartRow(i);
+		range.setStartCol(j);
+		//System.out.println("Start - Row:" + i + " Col: " + j);
+		
+		for (i = 0; i < rows.size(); i++){
+			Row row = rows.get(i);
+			if (row.getTop() > y2){
+				for (j = 0; j < row.getUiGlyphs().size(); j++){
+					UiGlyph glyph = row.getUiGlyphs().get(j);
+					// System.out.println("x: " + x1 + " pointx: " + glyph.getPosition().x);
+					if (glyph.getPosition().x > x2){
+						break;
+					}
+				}
+				
+				break;
+			}
+		}
+		
+		j = j == 0 ? j : j - 1;
+		if (i >= rows.size() && rows.size() > 0){
+			// clicked outside of the text. Select all the text
+			i = rows.size() - 1;
+			j = rows.get(i).getUiGlyphs().size() - 1;
+		}
+		
+		range.setEndRow(i);		
+		range.setEndCol(j);
+		
+		// check if the range is valid. Only the start check will suffice
+		if (range.getStartRow() < rows.size()){
+			this.controller.selectionRange = range;			
+			System.out.println(range.toString());
+			this.repaint();
+		}
 	}
 
 	@Override

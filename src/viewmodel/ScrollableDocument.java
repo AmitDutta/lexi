@@ -8,20 +8,20 @@ import model.*;
 public class ScrollableDocument extends Document{
 	
 	private Document document;	
-	private List<Row> rows;
+	//private List<Row> rows;
 	
 	public ScrollableDocument(Document document){
 		this.document = document;		
-		this.rows = this.document.getRows();
+		//this.rows = this.document.getRows();
 	}
 	
-	public List<Row> getRows(){
+	/*public List<Row> getRows(){
 		return this.rows;
 	}
 	
 	public void setRows(List<Row> rows){
 		this.rows = rows;
-	}
+	}*/
 	
 	@Override
 	public void draw(List<Row> rows, ViewEventArgs args, int from){
@@ -29,7 +29,7 @@ public class ScrollableDocument extends Document{
 			from = 0;
 		}
 		
-		this.setRows(rows);		
+		//this.setRows(rows);		
 		System.out.println("Scrollable: from: " + from + " rows: " + rows.size());
 		this.document.draw(rows, args, from);
 		//System.out.println("AFTER: at decorator: from: " + from + " rows: " + rows.size());

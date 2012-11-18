@@ -1,16 +1,18 @@
 package util;
 
+import java.awt.Graphics;
+
 import ui.*;
 
 public class ViewEventArgs {
 	
-	private IGraphics graphics;
+	private Graphics graphics;
 	private int top;
 	private int left;
 	private int frameWidth;
 	private int frameHeight;
 	
-	public ViewEventArgs(IGraphics graphics, int top, int left, int frameWidth, int frameHeight){
+	public ViewEventArgs(Graphics graphics, int top, int left, int frameWidth, int frameHeight){
 		this.graphics = graphics;
 		this.top = top;
 		this.left = left;
@@ -18,7 +20,7 @@ public class ViewEventArgs {
 		this.frameHeight = frameHeight;
 	}
 	
-	public IGraphics getGraphics(){
+	public Graphics getGraphics(){
 		return this.graphics;
 	}
 	

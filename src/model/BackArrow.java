@@ -2,6 +2,7 @@ package model;
 
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Graphics;
 
 import ui.*;
 
@@ -22,7 +23,7 @@ public class BackArrow extends Glyph {
 	}
 	
 	@Override
-	public void draw(IGraphics graphics, int x, int y){
+	public void draw(Graphics graphics, int x, int y){
 		if (this.fontmetrics == null){
 			this.fontmetrics = graphics.getFontMetrics(this.font);
 		}
@@ -53,6 +54,6 @@ public class BackArrow extends Glyph {
 	
 	@Override
 	public String toString(){
-		return "Arrow Glyph: ["+ this.str + "]";
+		return "Back Arrow Glyph: ["+ this.str + "]";
 	}
 }

@@ -1,6 +1,7 @@
 package util;
 
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
 import ui.IGraphics;
@@ -10,7 +11,7 @@ public class KeyPressedEventArgs extends ViewEventArgs{
 	private KeyEvent keyEvent;
 	private Font font;
 	
-	public KeyPressedEventArgs(IGraphics graphics, int top, int left, int frameWidth, int frameHeight, KeyEvent keyEvent, Font font) {
+	public KeyPressedEventArgs(Graphics graphics, int top, int left, int frameWidth, int frameHeight, KeyEvent keyEvent, Font font) {
 		super(graphics, top, left, frameWidth, frameHeight);
 		this.keyEvent = keyEvent;
 		this.font = font;
