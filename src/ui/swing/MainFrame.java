@@ -296,20 +296,22 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		y1 = e.getY();			
 	}
 	
-	public  static int isGreater(Point p1, Point p2){
+	/* Return 1 if p1 is greater than p2, 0 if p1 and p2 are equal
+	 * and -1 if p1 is smaller than p2 */
+	public static int isGreater(Point p1, Point p2){
 		int i = 0;
-		if (p1.y > p2.y){
-			i = 1;
-		}
-		else if (p1.y < p2.y){
-			i = -1;
-		}
-		else if (p1.x < p2.x){
+		if (p1.x < p2.x){
 			i = -1;
 		}
 		else if (p1.x > p2.x){
 			i = 1;
 		}
+		else if (p1.y < p2.y){
+			i = -1;
+		}
+		else if (p1.y > p2.y){
+			i = 1;
+		}	
 		
 		return i;
 	}
@@ -318,35 +320,31 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	public void mouseReleased(MouseEvent e) {
 		x2 = e.getX();
 		y2 = e.getY();
-		
 		Point p1 = new Point(x1, y1);
 		Point p2 = new Point(x2, y2);		
-		if (this.isGreater(p2, p1) == -1){
+		if (isGreater(p1, p2) == 1){
 			// p1 is bigger
 			Point temp = p1;
 			p1 = p2;
 			p2 = temp;
 		}		
 		
-		// p2 needs to be greater than p1
-		
+		// p2 needs to be greater than or equal p1		
 		x1 = p1.x;
 		y1 = p1.y;
 		x2 = p2.x;
 		y2 = p2.y;
 		
-		int i, j, k, l, startRow, startCol, endRow, endCol;
-		i = j = k = l = 0;
+		int i, j;
+		i = j = 0;
 		List<Row> rows = this.controller.getLogicalDocument().getRows();
-		// System.out.println(rows.size());
-		
-		for (i = 0; i < rows.size(); i++){
+		for (i = 0 + this.controller.getIndex(); i < rows.size(); i++){
 			Row row = rows.get(i);
-			if (row.getTop() > y1){
+			if (row.getTop() >= y1){
 				for (j = 0; j < row.getUiGlyphs().size(); j++){
 					UiGlyph glyph = row.getUiGlyphs().get(j);
 					// System.out.println("x: " + x1 + " pointx: " + glyph.getPosition().x);
-					if (glyph.getPosition().x > x1){
+					if (glyph.getPosition().x >= x1){
 						break;
 					}
 				}
@@ -361,13 +359,13 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		range.setStartCol(j);
 		//System.out.println("Start - Row:" + i + " Col: " + j);
 		
-		for (i = 0; i < rows.size(); i++){
+		for (i = 0 + this.controller.getIndex(); i < rows.size(); i++){
 			Row row = rows.get(i);
-			if (row.getTop() > y2){
+			if (row.getTop() >= y2){
 				for (j = 0; j < row.getUiGlyphs().size(); j++){
 					UiGlyph glyph = row.getUiGlyphs().get(j);
 					// System.out.println("x: " + x1 + " pointx: " + glyph.getPosition().x);
-					if (glyph.getPosition().x > x2){
+					if (glyph.getPosition().x >= x2){
 						break;
 					}
 				}

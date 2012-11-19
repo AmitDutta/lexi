@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
@@ -15,13 +16,17 @@ public class EditorController implements IEditorController{
 	
 	private Composition document;
 	private Document logicalDocument;
-	public int index;
+	private int index;
 	public SelectionRange selectionRange;
 	
 	public EditorController(Composition document){
 		this.index = 0;		
 		this.document = document;
 		this.logicalDocument = new ConcreteDocument();
+	}
+	
+	public int getIndex(){
+		return this.index;
 	}
 
 	@Override
@@ -97,28 +102,65 @@ public class EditorController implements IEditorController{
 	
 	@Override
 	public void handleDrawing(List<Row> rows, ViewEventArgs args){
-		// System.out.println("at controller handledrawing!!");
+		// System.out.println("at controller handle drawing!!");
 		this.logicalDocument.draw(rows, args, this.index);
-		int start, end;		
+		this.updateLogicalLocations(args);
 		if (this.selectionRange != null){
-			for (int i = this.selectionRange.getStartRow(); i <= this.selectionRange.getEndRow(); i++){
-				Row row = this.logicalDocument.getRows().get(i);
-				start = 0;
-				end = row.getUiGlyphs().size() - 1;
-				if (i == this.selectionRange.getStartRow()){
-					start = this.selectionRange.getStartCol();
-				}
-				
-				if (i == this.selectionRange.getEndRow()){
-					end = this.selectionRange.getEndCol();
-				}
-				
-				for (int p = start; p <= end; p++){
-					UiGlyph uiGlyph = row.getUiGlyphs().get(p);
-					Char ch = (Char)uiGlyph.getGlyph();
-					ch.select(args.getGraphics(), uiGlyph.getPosition().x, uiGlyph.getPosition().y);
-				}
+			this.selectGlyphs(args);
+		}		
+	}
+	
+	public void selectGlyphs(ViewEventArgs args){
+		int start, end;
+		for (int i = this.selectionRange.getStartRow(); i <= this.selectionRange.getEndRow(); i++){
+			Row row = this.logicalDocument.getRows().get(i);
+			start = 0;
+			end = row.getUiGlyphs().size() - 1;
+			if (i == this.selectionRange.getStartRow()){
+				start = this.selectionRange.getStartCol();
 			}
+			
+			if (i == this.selectionRange.getEndRow()){
+				end = this.selectionRange.getEndCol();
+			}
+			
+			for (int p = start; p <= end; p++){
+				UiGlyph uiGlyph = row.getUiGlyphs().get(p);
+				Char ch = (Char)uiGlyph.getGlyph();
+				ch.select(args.getGraphics(), uiGlyph.getPosition().x, uiGlyph.getPosition().y);
+			}
+		}
+	}
+	
+	/*update locations of Uiglyphs. required for selection to work in scrolling environment*/
+	public void updateLogicalLocations(ViewEventArgs args){
+		int i, j;
+		Point dummyPoint = new Point(Integer.MIN_VALUE, Integer.MIN_VALUE);
+		for (i = 0; i < this.index; i++){
+			Row currentRow = this.logicalDocument.getRows().get(i);
+			currentRow.setTop(Integer.MIN_VALUE);
+			currentRow.setLeft(Integer.MIN_VALUE);
+			for (UiGlyph uiGlyph : currentRow.getUiGlyphs()){
+				uiGlyph.setPosition(dummyPoint);
+			}
+		}
+		
+		System.out.println("i: " + i);
+		// calculate points exactly like the compositor
+		int currentTop = args.getTop();
+		int currentLeft = args.getLeft();
+		for (j = i; j < this.logicalDocument.getRows().size(); j++){
+			Row currentRow = this.logicalDocument.getRows().get(j);
+			currentRow.setTop(currentTop);
+			currentRow.setLeft(currentLeft);
+			for (UiGlyph uiGlyph : currentRow.getUiGlyphs()){
+				Point position = new Point(currentLeft, currentTop);
+				uiGlyph.setPosition(position);
+				currentLeft += uiGlyph.getGlyph().getWidth() + 2;
+			}
+			
+			currentTop += currentRow.getHeight();
+			currentLeft = args.getLeft();
 		}
 	}
 	

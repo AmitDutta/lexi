@@ -24,6 +24,10 @@ public class UiGlyph {
 		return this.position;
 	}
 	
+	public void setPosition(Point position){
+		this.position = position;
+	}
+	
 	public int getPhysicalIndex(){
 		return this.physicalIndex;
 	}

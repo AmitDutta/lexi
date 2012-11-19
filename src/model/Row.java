@@ -69,7 +69,7 @@ public class Row extends Glyph{
 			uiGlyph.getGlyph().draw(graphics, currentLeft, y);
 			currentLeft += uiGlyph.getGlyph().getWidth() + 2;
 		}
-	}
+	}	
 
 	public int getStartIndex() {
 		return startIndex;

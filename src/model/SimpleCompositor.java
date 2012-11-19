@@ -49,7 +49,7 @@ public class SimpleCompositor implements ICompositor{
 				currentLeft = args.getLeft();												
 			}
 			else{				
-				currentLeft += glyph.getWidth() + 2;
+				currentLeft += uiGlyph.getGlyph().getWidth() + 2;
 			}
 		}
 				
