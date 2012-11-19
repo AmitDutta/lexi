@@ -3,6 +3,9 @@ package controller;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import command.AppendCharCommand;
+import command.CommandManager;
+
 import model.*;
 import viewmodel.*;
 import sun.org.mozilla.javascript.internal.ast.ForInLoop;
@@ -23,19 +26,27 @@ public class EditorController implements IEditorController{
 
 	@Override
 	public void onKeyPressed(KeyPressedEventArgs param) {
-		Glyph glyph = null;		
-		if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'a'  && param.getKeyEvent().getKeyCode() == 65){
+		Glyph glyph = null;
+		if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_ESCAPE){
+			this.selectionRange = null;
+		}
+		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'a'  && param.getKeyEvent().getKeyCode() == 65){
 			glyph = new Arrow(param.getFont());			
-			this.document.insert(glyph, this.document.getChildren().size(), param);
+			this.document.insert(glyph, this.document.getChildren().size());
 		}
 		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'b'  && param.getKeyEvent().getKeyCode() == 66){
 			glyph = new BackArrow(param.getFont());			
-			this.document.insert(glyph, this.document.getChildren().size(), param);
+			this.document.insert(glyph, this.document.getChildren().size());
+		}
+		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'z'  && param.getKeyEvent().getKeyCode() == 90){
+			CommandManager.getInstance().undo();
+		}
+		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'y'  && param.getKeyEvent().getKeyCode() == 89){
+			CommandManager.getInstance().redo();
 		}
 		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_PAGE_UP){
 			System.out.println(this.logicalDocument.needScrolling(param));
-			if (this.logicalDocument.needScrolling(param)){
-			
+			if (this.logicalDocument.needScrolling(param)){			
 				if (index > 0){
 					index -= 1;
 				}
@@ -52,8 +63,10 @@ public class EditorController implements IEditorController{
 		}
 		else{			
 			if (!param.getKeyEvent().isControlDown()){
-				glyph = new Char(param.getKeyEvent().getKeyChar(), param.getFont());
-				this.document.insert(glyph, this.document.getChildren().size(), param);
+				AppendCharCommand cmd = new AppendCharCommand(this.document, param);
+				CommandManager.getInstance().execute(cmd);
+				//glyph = new Char(param.getKeyEvent().getKeyChar(), param.getFont());				
+				//this.document.insert(glyph, this.document.getChildren().size());
 			}			
 		}
 	}
@@ -61,7 +74,7 @@ public class EditorController implements IEditorController{
 	@Override
 	public void onImageInserted(InsertImageEventArgs param) {
 		Glyph glyph = new Picture(param.getImage());
-		this.document.insert(glyph, this.document.getChildren().size(), param);
+		this.document.insert(glyph, this.document.getChildren().size());
 	}
 	
 	@Override

@@ -7,21 +7,25 @@ import util.*;
 public class Composition implements ISubject{
 
 	private List<Glyph> children;
-	private List<IObserver> observers;
-	private List<Row> rows;	
+	private List<IObserver> observers;		
 	
 	public Composition(){		
 		this.children = new ArrayList<Glyph>();				
 		this.observers = new ArrayList<IObserver>();
 	}
 	
-	public void insert(Glyph glyph, int i, ViewEventArgs args){
+	public void insert(Glyph glyph, int i){
 		this.children.add(i, glyph);		
-		this.modelChanged(rows);
+		this.modelChanged();
+	}
+	
+	public void remove(int i){
+		this.children.remove(i);
+		this.modelChanged();
 	}
 	
 	public void refresh(ViewEventArgs args){		
-		this.modelChanged(rows);
+		this.modelChanged();
 	}
 	
 	public List<Glyph> getChildren(){
@@ -49,7 +53,7 @@ public class Composition implements ISubject{
 		}
 	}
 	
-	public void	modelChanged(List<Row> rows){
+	public void	modelChanged(){
 		this.notifyObservers();
 	}
 }
