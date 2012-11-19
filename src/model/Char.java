@@ -32,7 +32,7 @@ public class Char extends Glyph {
 	
 	public void select(Graphics graphics, int x, int y){
 		Color previousColor = graphics.getColor();
-		graphics.setColor(Color.white);
+		graphics.setColor(Color.GRAY);
 		Rectangle2D rect = this.getFontrMetrics(graphics).getStringBounds(Character.toString(ch), graphics);
 		graphics.drawRect(x, y - (int)rect.getHeight(), (int)rect.getWidth(), (int)rect.getHeight());
 		graphics.fillRect(x, y - (int)rect.getHeight(), (int)rect.getWidth(), (int)rect.getHeight());

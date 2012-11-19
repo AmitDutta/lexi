@@ -385,6 +385,15 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		range.setEndCol(j);
 		
 		// check if the range is valid. Only the start check will suffice
+		if (range.getStartRow() > range.getEndRow()){
+			int startx = range.getEndRow();
+			int starty = range.getEndCol();
+			range.setEndRow(range.getStartRow());
+			range.setEndCol(range.getStartCol());
+			range.setStartRow(startx);
+			range.setStartCol(starty);
+		}
+		
 		if (range.getStartRow() < rows.size()){
 			this.controller.selectionRange = range;			
 			System.out.println(range.toString());
