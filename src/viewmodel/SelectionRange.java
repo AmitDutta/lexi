@@ -5,7 +5,7 @@ public class SelectionRange {
 	private int startRow;
 	private int startCol;
 	private int endRow;
-	private int endCol;
+	private int endCol;	
 	
 	public SelectionRange(){		
 	}

@@ -126,14 +126,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	public void keyPressed(KeyEvent e) {		
 			KeyPressedEventArgs param = new KeyPressedEventArgs(this.getGraphics(), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
 					this.getContentPane().getHeight(), e, this.getFont());
-			this.controller.onKeyPressed(param);			
-			if ((e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) && this.scrollOn){
-				/* This is required because page up and down are not added to glyph model. So, the view update will never
-				 * be called and then no repaint. So, if these control keys are pressed, we need to manually repaint and update the 
-				 * view if the scroll is on. */
-				
-			}
-			
+			this.controller.onKeyPressed(param);
 			this.repaint(1);			
 	}
 
@@ -265,12 +258,12 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	private void onInsertImageMenuItemClick(ActionEvent evt){
 		if(this.getJFileChooser().showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
 			try {
-				BufferedImage image = ImageIO.read(this.getJFileChooser().getSelectedFile());
+				String fullFilePath = this.getJFileChooser().getSelectedFile().getAbsolutePath();
 				InsertImageEventArgs args = new InsertImageEventArgs(this.getGraphics(), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
-						this.getContentPane().getHeight(), image);
+						this.getContentPane().getHeight(), fullFilePath);
 				this.controller.onImageInserted(args);
 				
-			}catch (IOException ex){
+			}catch (Exception ex){
 				ex.printStackTrace();				
 			}
 		}
@@ -317,9 +310,9 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	}
 	
 	@Override
-	public void mouseReleased(MouseEvent e) {
+	public void mouseReleased(MouseEvent e) {		
 		x2 = e.getX();
-		y2 = e.getY();
+		y2 = e.getY();		
 		Point p1 = new Point(x1, y1);
 		Point p2 = new Point(x2, y2);		
 		if (isGreater(p1, p2) == 1){
@@ -394,9 +387,12 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 			range.setStartCol(starty);
 		}
 		
+		if (range.getEndRow() >= rows.size()){
+			range.setEndRow(range.getEndRow() - 1);
+		}
+		
 		if (range.getStartRow() < rows.size()){
-			this.controller.selectionRange = range;			
-			System.out.println(range.toString());
+			this.controller.selectionRange = range;
 			this.repaint();
 		}
 	}

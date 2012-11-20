@@ -5,9 +5,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
-import java.text.CharacterIterator;
-
-import ui.*;
 
 public class Char extends Glyph {
 	
@@ -32,12 +29,13 @@ public class Char extends Glyph {
 	
 	public void select(Graphics graphics, int x, int y){
 		Color previousColor = graphics.getColor();
-		graphics.setColor(Color.GRAY);
+		graphics.setColor(Color.black);
 		Rectangle2D rect = this.getFontrMetrics(graphics).getStringBounds(Character.toString(ch), graphics);
 		graphics.drawRect(x, y - (int)rect.getHeight(), (int)rect.getWidth(), (int)rect.getHeight());
 		graphics.fillRect(x, y - (int)rect.getHeight(), (int)rect.getWidth(), (int)rect.getHeight());
-		graphics.setColor(previousColor);
+		graphics.setColor(Color.white);
 		this.draw(graphics, x, y);
+		graphics.setColor(previousColor);
 	}
 	
 	@Override

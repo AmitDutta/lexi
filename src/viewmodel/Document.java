@@ -1,11 +1,10 @@
 package viewmodel;
 
-import java.util.*;
-
-import ui.IGraphics;
-import util.ViewEventArgs;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.Row;
+import util.ViewEventArgs;
 
 public abstract class Document {
 	

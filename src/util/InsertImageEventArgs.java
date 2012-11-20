@@ -7,14 +7,14 @@ import ui.IGraphics;
 
 public class InsertImageEventArgs extends ViewEventArgs{
 
-	private BufferedImage image;
+	private String filePath;
 	
-	public InsertImageEventArgs(Graphics graphics, int top, int left, int frameWidth, int frameHeight, BufferedImage image){
+	public InsertImageEventArgs(Graphics graphics, int top, int left, int frameWidth, int frameHeight, String filePath){
 		super(graphics, top, left, frameWidth, frameHeight);
-		this.image = image;
+		this.filePath = filePath;
 	}
 	
-	public BufferedImage getImage(){
-		return this.image;
+	public String getFilePath(){
+		return this.filePath;
 	}
 }

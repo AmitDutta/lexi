@@ -14,8 +14,7 @@ public class SimpleCompositor implements ICompositor{
 
 	@Override
 	public List<Row> compose(List<Glyph> glyphs, ViewEventArgs args) {
-		List<Row> rows = new ArrayList<Row>();		
-		
+		List<Row> rows = new ArrayList<Row>();				
 		if (glyphs == null || glyphs.size() == 0){
 			return rows;
 		}

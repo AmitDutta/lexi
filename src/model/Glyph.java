@@ -2,25 +2,13 @@ package model;
 
 import java.awt.Graphics;
 
-import ui.*;
-import util.*;
+public abstract class Glyph {
 
-// abstract class ? think
-public class Glyph {
-
-	public void draw(Graphics graphics, int x, int y){		
-	}
+	public abstract void draw(Graphics graphics, int x, int y);
 	
-	public void insert(Glyph glyph, int i, ViewEventArgs param){		
-	}
+	public abstract void select(Graphics graphics, int x, int y); 
 	
-	// abstract ?
-	public int getWidth(){
-		return 0;
-	}
+	public abstract int getWidth();	
 	
-	// abstract?
-	public int getHeight(){
-		return 0;
-	}	
+	public abstract int getHeight();
 }

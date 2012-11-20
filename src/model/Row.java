@@ -1,7 +1,9 @@
 package model;
 
 import java.awt.Graphics;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import viewmodel.UiGlyph;
 
 public class Row extends Glyph{
@@ -9,18 +11,12 @@ public class Row extends Glyph{
 	private int startIndex;
 	private int endIndex;
 	private int left;
-	private int top;	
-	// private List<Glyph> items;
+	private int top;
 	private List<UiGlyph> uiGlyphs;
 	
-	public Row(){
-		/* this.items = new ArrayList<Glyph>(); */
+	public Row(){		
 		this.uiGlyphs = new ArrayList<UiGlyph>();
 	}
-	
-	/*public List<Glyph> getItems(){
-		return this.items;
-	}*/
 	
 	public List<UiGlyph> getUiGlyphs(){
 		return this.uiGlyphs;
@@ -29,12 +25,6 @@ public class Row extends Glyph{
 	@Override
 	public int getHeight(){
 		int height = 0;
-		/*for (Glyph glyph : this.items){
-			if (height < glyph.getHeight()){
-				height = glyph.getHeight();
-			}
-		}*/
-		
 		for (UiGlyph uiGlyph : this.uiGlyphs){
 			if (height < uiGlyph.getGlyph().getHeight()){
 				height = uiGlyph.getGlyph().getHeight();
@@ -46,11 +36,7 @@ public class Row extends Glyph{
 	
 	@Override
 	public int getWidth(){
-		int width = 2;
-		/*for (Glyph glyph : this.items){
-			width += glyph.getWidth();
-		}*/
-		
+		int width = 2;		
 		for (UiGlyph uiGlyph : this.uiGlyphs){
 			width += uiGlyph.getGlyph().getWidth();
 		}
@@ -61,15 +47,15 @@ public class Row extends Glyph{
 	@Override
 	public void draw(Graphics graphics, int x, int y){		
 		int currentLeft = x;
-		/*for(Glyph glyph: items){			
-			glyph.draw(graphics, currentLeft, y);
-			currentLeft += glyph.getWidth() + 2;
-		}*/
 		for (UiGlyph uiGlyph : this.uiGlyphs){
 			uiGlyph.getGlyph().draw(graphics, currentLeft, y);
 			currentLeft += uiGlyph.getGlyph().getWidth() + 2;
 		}
-	}	
+	}
+	
+	@Override
+	public void select(Graphics graphics, int x, int y){		
+	}
 
 	public int getStartIndex() {
 		return startIndex;

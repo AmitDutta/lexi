@@ -2,10 +2,12 @@ package controller;
 
 import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import command.AppendCharCommand;
 import command.CommandManager;
+import command.DeleteCommand;
 
 import model.*;
 import viewmodel.*;
@@ -35,6 +37,17 @@ public class EditorController implements IEditorController{
 		if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_ESCAPE){
 			this.selectionRange = null;
 		}
+		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_DELETE){
+			DeleteCommand cmd = null;			
+			if (this.selectionRange != null){
+				System.out.println(this.selectionRange);				
+				int startFrom = this.logicalDocument.getRows().get(this.selectionRange.getStartRow()).getUiGlyphs().get(this.selectionRange.getStartCol()).getPhysicalIndex();				
+				int endAt = this.logicalDocument.getRows().get(this.selectionRange.getEndRow()).getUiGlyphs().get(this.selectionRange.getEndCol()).getPhysicalIndex();
+				cmd = new DeleteCommand(document, startFrom, endAt);
+				CommandManager.getInstance().execute(cmd);
+				this.selectionRange = null;
+			}
+		}
 		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'a'  && param.getKeyEvent().getKeyCode() == 65){
 			glyph = new Arrow(param.getFont());			
 			this.document.insert(glyph, this.document.getChildren().size());
@@ -49,17 +62,14 @@ public class EditorController implements IEditorController{
 		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'y'  && param.getKeyEvent().getKeyCode() == 89){
 			CommandManager.getInstance().redo();
 		}
-		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_PAGE_UP){
-			System.out.println(this.logicalDocument.needScrolling(param));
+		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_PAGE_UP){			
 			if (this.logicalDocument.needScrolling(param)){			
 				if (index > 0){
 					index -= 1;
 				}
 			}
 		}
-		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_PAGE_DOWN){
-			System.out.println("at controller: need scrolling? " + this.logicalDocument.needScrolling(param));
-			 System.out.println("ndex: " + this.index + " logical rows count: " + this.logicalDocument.getRows().size());
+		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_PAGE_DOWN){			
 			if (this.logicalDocument.needScrolling(param)){
 				if (index < (this.logicalDocument.getRows().size() - 1)){
 					index += 1;					
@@ -70,15 +80,13 @@ public class EditorController implements IEditorController{
 			if (!param.getKeyEvent().isControlDown()){
 				AppendCharCommand cmd = new AppendCharCommand(this.document, param);
 				CommandManager.getInstance().execute(cmd);
-				//glyph = new Char(param.getKeyEvent().getKeyChar(), param.getFont());				
-				//this.document.insert(glyph, this.document.getChildren().size());
 			}			
 		}
 	}
 
 	@Override
 	public void onImageInserted(InsertImageEventArgs param) {
-		Glyph glyph = new Picture(param.getImage());
+		Glyph glyph = new Picture(param.getFilePath());
 		this.document.insert(glyph, this.document.getChildren().size());
 	}
 	
@@ -111,7 +119,7 @@ public class EditorController implements IEditorController{
 	}
 	
 	public void selectGlyphs(ViewEventArgs args){
-		int start, end;
+		int start, end;		
 		for (int i = this.selectionRange.getStartRow(); i <= this.selectionRange.getEndRow(); i++){
 			Row row = this.logicalDocument.getRows().get(i);
 			start = 0;
@@ -125,9 +133,8 @@ public class EditorController implements IEditorController{
 			}
 			
 			for (int p = start; p <= end; p++){
-				UiGlyph uiGlyph = row.getUiGlyphs().get(p);
-				Char ch = (Char)uiGlyph.getGlyph();
-				ch.select(args.getGraphics(), uiGlyph.getPosition().x, uiGlyph.getPosition().y);
+				UiGlyph uiGlyph = row.getUiGlyphs().get(p);				
+				uiGlyph.getGlyph().select(args.getGraphics(), uiGlyph.getPosition().x, uiGlyph.getPosition().y);
 			}
 		}
 	}
@@ -144,9 +151,8 @@ public class EditorController implements IEditorController{
 				uiGlyph.setPosition(dummyPoint);
 			}
 		}
-		
-		System.out.println("i: " + i);
-		// calculate points exactly like the compositor
+				
+		/* calculate points exactly like the compositor */
 		int currentTop = args.getTop();
 		int currentLeft = args.getLeft();
 		for (j = i; j < this.logicalDocument.getRows().size(); j++){
@@ -171,6 +177,7 @@ public class EditorController implements IEditorController{
 	
 	@Override
 	public void handleResize(){
+		this.selectionRange = null;
 		this.index = 0;
 	}
 }

@@ -29,8 +29,8 @@ public class ScrollableDocument extends Document{
 			from = 0;
 		}
 		
-		//this.setRows(rows);		
-		System.out.println("Scrollable: from: " + from + " rows: " + rows.size());
+		// this.setRows(rows);		
+		// System.out.println("Scrollable: from: " + from + " rows: " + rows.size());
 		this.document.draw(rows, args, from);
 		//System.out.println("AFTER: at decorator: from: " + from + " rows: " + rows.size());
 	}

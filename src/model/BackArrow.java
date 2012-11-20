@@ -4,8 +4,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
-import ui.*;
-
 public class BackArrow extends Glyph {
 	
 	private String str;
@@ -30,6 +28,10 @@ public class BackArrow extends Glyph {
 		
 		//TODO set the font before drawing		
 		graphics.drawString(this.str, x, y);
+	}
+	
+	@Override
+	public void select(Graphics graphics, int x, int y){		
 	}
 	
 	@Override
