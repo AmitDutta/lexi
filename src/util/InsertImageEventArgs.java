@@ -1,9 +1,6 @@
 package util;
 
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-
-import ui.IGraphics;
 
 public class InsertImageEventArgs extends ViewEventArgs{
 

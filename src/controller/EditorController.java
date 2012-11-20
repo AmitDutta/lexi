@@ -2,17 +2,28 @@ package controller;
 
 import java.awt.Point;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.List;
+
+import model.Arrow;
+import model.BackArrow;
+import model.Composition;
+import model.Glyph;
+import model.Picture;
+import model.Row;
+import util.Constants;
+import util.InsertImageEventArgs;
+import util.KeyPressedEventArgs;
+import util.MenuPressedEventArgs;
+import util.ViewEventArgs;
+import viewmodel.ConcreteDocument;
+import viewmodel.Document;
+import viewmodel.ScrollableDocument;
+import viewmodel.SelectionRange;
+import viewmodel.UiGlyph;
 
 import command.AppendCharCommand;
 import command.CommandManager;
 import command.DeleteCommand;
-
-import model.*;
-import viewmodel.*;
-import sun.org.mozilla.javascript.internal.ast.ForInLoop;
-import util.*;
 
 public class EditorController implements IEditorController{
 	
@@ -110,7 +121,6 @@ public class EditorController implements IEditorController{
 	
 	@Override
 	public void handleDrawing(List<Row> rows, ViewEventArgs args){
-		// System.out.println("at controller handle drawing!!");
 		this.logicalDocument.draw(rows, args, this.index);
 		this.updateLogicalLocations(args);
 		if (this.selectionRange != null){
@@ -132,10 +142,7 @@ public class EditorController implements IEditorController{
 				end = this.selectionRange.getEndCol();
 			}
 			
-			for (int p = start; p <= end; p++){
-				UiGlyph uiGlyph = row.getUiGlyphs().get(p);				
-				uiGlyph.getGlyph().select(args.getGraphics(), uiGlyph.getPosition().x, uiGlyph.getPosition().y);
-			}
+			row.select(args.getGraphics(), row.getTop(), row.getLeft(), start, end);
 		}
 	}
 	

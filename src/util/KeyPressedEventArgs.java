@@ -4,8 +4,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
-import ui.IGraphics;
-
 public class KeyPressedEventArgs extends ViewEventArgs{
 	
 	private KeyEvent keyEvent;

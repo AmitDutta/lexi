@@ -56,5 +56,4 @@ public class DeleteCommand implements ICommand {
 	public boolean canUndo() {		
 		return true;
 	}
-
 }

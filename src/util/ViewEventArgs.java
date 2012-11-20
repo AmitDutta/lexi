@@ -2,8 +2,6 @@ package util;
 
 import java.awt.Graphics;
 
-import ui.*;
-
 public class ViewEventArgs {
 	
 	private Graphics graphics;

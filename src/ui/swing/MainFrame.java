@@ -1,6 +1,8 @@
 package ui.swing;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -11,21 +13,32 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
-import model.*;
-import controller.*;
-import util.*;
+import model.Composition;
+import model.ICompositor;
+import model.Row;
+import model.SimpleCompositor;
+import util.Constants;
+import util.IObserver;
+import util.InsertImageEventArgs;
+import util.KeyPressedEventArgs;
+import util.MenuPressedEventArgs;
+import util.ModelChangedEventArgs;
+import util.ViewEventArgs;
 import viewmodel.SelectionRange;
 import viewmodel.UiGlyph;
+import controller.EditorController;
 
 public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, ComponentListener, ActionListener, IObserver, WindowListener, MouseListener{
 		
@@ -118,9 +131,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	private Boolean scrollOn = false;
+	}	
 	
 	@Override
 	public void keyPressed(KeyEvent e) {		
@@ -230,12 +241,10 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	private void handleScrolling(){
 		this.controller.onMenuItemPressed(new MenuPressedEventArgs(this.scrollMenuItem));
 		if (this.scrollMenuItem.getText() == Constants.ScrollOffText){
-			this.scrollMenuItem.setText(Constants.ScrollOnText);
-			scrollOn = false;
+			this.scrollMenuItem.setText(Constants.ScrollOnText);			
 		}
 		else{
 			this.scrollMenuItem.setText(Constants.ScrollOffText);
-			scrollOn = true;
 		}
 		
 		this.repaint();

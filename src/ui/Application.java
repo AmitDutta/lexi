@@ -1,10 +1,9 @@
 package ui;
 
-import java.awt.*;
+import java.awt.EventQueue;
 
+import model.Composition;
 import controller.EditorController;
-import controller.IEditorController;
-import model.*;
 
 public class Application {
 

@@ -54,7 +54,15 @@ public class Row extends Glyph{
 	}
 	
 	@Override
-	public void select(Graphics graphics, int x, int y){		
+	public void select(Graphics graphics, int x, int y){
+		this.select(graphics, x, y, 0, this.getUiGlyphs().size() - 1);
+	}
+	
+	public void select(Graphics graphics, int x, int y, int start, int end){
+		for (int i = start; i <= end; i++){
+			UiGlyph uiGlyph = this.getUiGlyphs().get(i);				
+			uiGlyph.getGlyph().select(graphics, uiGlyph.getPosition().x, uiGlyph.getPosition().y);
+		}
 	}
 
 	public int getStartIndex() {
