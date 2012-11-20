@@ -52,4 +52,8 @@ public class SelectionRange {
 	public String toString(){
 		return "StartRow: " + this.startRow + ", StartCol: " + this.startCol + " EndRow: " + this.endRow + " EndCol: " + this.endCol;
 	}
+	
+	public Boolean isSingleGlyphSelection(){
+		return (this.startRow == this.endRow) && (this.startCol == this.endCol);
+	}
 }

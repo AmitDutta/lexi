@@ -15,7 +15,7 @@ public class Composition implements ISubject{
 	}
 	
 	public void insert(Glyph glyph, int i){
-		this.children.add(i, glyph);		
+		this.children.add(i, glyph);
 		this.modelChanged();
 	}
 	

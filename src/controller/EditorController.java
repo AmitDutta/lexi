@@ -6,6 +6,7 @@ import java.util.List;
 
 import model.Arrow;
 import model.BackArrow;
+import model.Char;
 import model.Composition;
 import model.Glyph;
 import model.Picture;
@@ -21,7 +22,8 @@ import viewmodel.ScrollableDocument;
 import viewmodel.SelectionRange;
 import viewmodel.UiGlyph;
 
-import command.AppendCharCommand;
+import command.ICommand;
+import command.InsertCommand;
 import command.CommandManager;
 import command.DeleteCommand;
 
@@ -45,15 +47,16 @@ public class EditorController implements IEditorController{
 	@Override
 	public void onKeyPressed(KeyPressedEventArgs param) {
 		Glyph glyph = null;
+		ICommand cmd = null;
 		if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_ESCAPE){
 			this.selectionRange = null;
 		}
-		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_DELETE){
-			DeleteCommand cmd = null;			
-			if (this.selectionRange != null){
-				System.out.println(this.selectionRange);				
-				int startFrom = this.logicalDocument.getRows().get(this.selectionRange.getStartRow()).getUiGlyphs().get(this.selectionRange.getStartCol()).getPhysicalIndex();				
-				int endAt = this.logicalDocument.getRows().get(this.selectionRange.getEndRow()).getUiGlyphs().get(this.selectionRange.getEndCol()).getPhysicalIndex();
+		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_DELETE){			 			
+			if (this.selectionRange != null){								
+				int startFrom = this.logicalDocument.getRows().get(this.selectionRange.getStartRow()).getUiGlyphs()
+						.get(this.selectionRange.getStartCol()).getPhysicalIndex();				
+				int endAt = this.logicalDocument.getRows().get(this.selectionRange.getEndRow()).getUiGlyphs()
+						.get(this.selectionRange.getEndCol()).getPhysicalIndex();
 				cmd = new DeleteCommand(document, startFrom, endAt);
 				CommandManager.getInstance().execute(cmd);
 				this.selectionRange = null;
@@ -88,17 +91,20 @@ public class EditorController implements IEditorController{
 			}			
 		}
 		else{			
-			if (!param.getKeyEvent().isControlDown()){
-				AppendCharCommand cmd = new AppendCharCommand(this.document, param);
-				CommandManager.getInstance().execute(cmd);
-			}			
-		}
+			if (!param.getKeyEvent().isControlDown()){				
+					glyph = new Char(param.getKeyEvent().getKeyChar(), param.getFont());
+					this.InsertGlyph(glyph);
+					this.selectionRange = null;
+				}				
+		}			
 	}
+	
 
 	@Override
 	public void onImageInserted(InsertImageEventArgs param) {
 		Glyph glyph = new Picture(param.getFilePath());
-		this.document.insert(glyph, this.document.getChildren().size());
+		this.InsertGlyph(glyph);
+		this.selectionRange = null;
 	}
 	
 	@Override
@@ -186,5 +192,25 @@ public class EditorController implements IEditorController{
 	public void handleResize(){
 		this.selectionRange = null;
 		this.index = 0;
+	}
+	
+	private void InsertGlyph(Glyph glyph){
+		ICommand cmd = null;
+		int physicalIndex = Integer.MIN_VALUE;
+		if (this.selectionRange == null){
+			/* Add at the end of document*/
+			physicalIndex = this.document.getChildren().size();
+		}
+		else if (this.selectionRange != null && this.selectionRange.isSingleGlyphSelection()){
+			physicalIndex = this.logicalDocument.getRows().get(this.selectionRange.getStartRow()).getUiGlyphs()
+					.get(this.selectionRange.getStartCol()).getPhysicalIndex() + 1 ;
+			
+		}
+		
+		if (physicalIndex != Integer.MIN_VALUE){			
+			cmd = new InsertCommand(this.document, glyph, physicalIndex);				
+			CommandManager.getInstance().execute(cmd);
+			this.selectionRange = null;
+		}
 	}
 }
