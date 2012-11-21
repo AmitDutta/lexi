@@ -23,10 +23,11 @@ public class Char extends Glyph {
 			this.fontmetrics = graphics.getFontMetrics(this.font);
 		}
 		
-		//TODO set the font before drawing		
+		graphics.setFont(this.font);
 		graphics.drawString(Character.toString(ch), x, y);
 	}
 	
+	@Override
 	public void select(Graphics graphics, int x, int y){
 		Color previousColor = graphics.getColor();
 		graphics.setColor(Color.black);
@@ -36,6 +37,10 @@ public class Char extends Glyph {
 		graphics.setColor(Color.white);
 		this.draw(graphics, x, y);
 		graphics.setColor(previousColor);
+	}
+	
+	public void setFont(Font font){
+		this.font = font;
 	}
 	
 	@Override

@@ -43,7 +43,8 @@ import controller.EditorController;
 public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, ComponentListener, ActionListener, IObserver, WindowListener, MouseListener{
 		
 	private static final int TOP_MARGIN = 20;
-	private static final int LEFT_MARGIN = 5;	
+	private static final int LEFT_MARGIN = 5;
+	private Graphics graphics;
 	private EditorController controller;
 	private Composition document;
 	private JFileChooser jFileChooser;
@@ -101,6 +102,8 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		
 		this.x1 = this.y1 = -10;
 		this.x2 = this.y2 = -20;
+		
+		this.graphics = this.getGraphics();
 	}	
 
 	@Override
@@ -135,7 +138,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	
 	@Override
 	public void keyPressed(KeyEvent e) {		
-			KeyPressedEventArgs param = new KeyPressedEventArgs(this.getGraphics(), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
+			KeyPressedEventArgs param = new KeyPressedEventArgs(this.graphics, this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
 					this.getContentPane().getHeight(), e, this.getFont());
 			this.controller.onKeyPressed(param);
 			this.repaint(1);			
@@ -165,7 +168,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	@Override
 	public void paint(Graphics g){
 		super.paint(g);
-		ViewEventArgs param = new ViewEventArgs(this.getGraphics(), this.getTop(), this.getLeft(), this.getWidth(),
+		ViewEventArgs param = new ViewEventArgs(this.graphics, this.getTop(), this.getLeft(), this.getWidth(),
 				this.getHeight());
 		List<Row> rows = this.compositor.compose(this.document.getChildren(), param);		
 		// System.out.println("from view -->");

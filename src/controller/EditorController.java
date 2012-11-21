@@ -26,6 +26,8 @@ import command.ICommand;
 import command.InsertCommand;
 import command.CommandManager;
 import command.DeleteCommand;
+import command.ToggleBoldCommand;
+import command.ToggleItalicCommand;
 
 public class EditorController implements IEditorController{
 	
@@ -43,6 +45,16 @@ public class EditorController implements IEditorController{
 	public int getIndex(){
 		return this.index;
 	}
+	
+	public int getStartFrom(){
+		return this.logicalDocument.getRows().get(this.selectionRange.getStartRow()).getUiGlyphs()
+				.get(this.selectionRange.getStartCol()).getPhysicalIndex();
+	}
+	
+	public int getEndAt(){
+		return this.logicalDocument.getRows().get(this.selectionRange.getEndRow()).getUiGlyphs()
+		.get(this.selectionRange.getEndCol()).getPhysicalIndex();
+	}
 
 	@Override
 	public void onKeyPressed(KeyPressedEventArgs param) {
@@ -53,22 +65,28 @@ public class EditorController implements IEditorController{
 		}
 		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_DELETE){			 			
 			if (this.selectionRange != null){								
-				int startFrom = this.logicalDocument.getRows().get(this.selectionRange.getStartRow()).getUiGlyphs()
-						.get(this.selectionRange.getStartCol()).getPhysicalIndex();				
-				int endAt = this.logicalDocument.getRows().get(this.selectionRange.getEndRow()).getUiGlyphs()
-						.get(this.selectionRange.getEndCol()).getPhysicalIndex();
+				int startFrom = this.getStartFrom();
+				int endAt = this.getEndAt(); 
 				cmd = new DeleteCommand(document, startFrom, endAt);
 				CommandManager.getInstance().execute(cmd);
 				this.selectionRange = null;
 			}
 		}
 		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'a'  && param.getKeyEvent().getKeyCode() == 65){
-			glyph = new Arrow(param.getFont());			
+			glyph = new Arrow(param.getFont());
 			this.document.insert(glyph, this.document.getChildren().size());
 		}
 		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'b'  && param.getKeyEvent().getKeyCode() == 66){
-			glyph = new BackArrow(param.getFont());			
-			this.document.insert(glyph, this.document.getChildren().size());
+			int startFrom = this.getStartFrom();
+			int endAt = this.getEndAt();
+			cmd = new ToggleBoldCommand(param.getGraphics(), this.document, startFrom, endAt);
+			CommandManager.getInstance().execute(cmd);
+		}
+		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'i'  && param.getKeyEvent().getKeyCode() == 73){
+			int startFrom = this.getStartFrom();
+			int endAt = this.getEndAt();
+			cmd = new ToggleItalicCommand(param.getGraphics(), this.document, startFrom, endAt);
+			CommandManager.getInstance().execute(cmd);
 		}
 		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'z'  && param.getKeyEvent().getKeyCode() == 90){
 			CommandManager.getInstance().undo();

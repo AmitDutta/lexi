@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.Font;
 import java.util.*;
 
 import util.*;
@@ -30,6 +31,15 @@ public class Composition implements ISubject{
 	
 	public List<Glyph> getChildren(){
 		return this.children;
+	}
+	
+	public void updateFont(Font newFont, int startFrom, int endAt){
+		for (int i = startFrom; i <= endAt; i++){
+			Char ch = (Char) this.children.get(i);
+			ch.setFont(newFont);
+		}
+		
+		this.modelChanged();
 	}
 
 	@Override
