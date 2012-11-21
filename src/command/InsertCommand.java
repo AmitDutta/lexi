@@ -17,12 +17,14 @@ public class InsertCommand implements ICommand{
 	
 	@Override
 	public boolean execute() {
+		//System.out.println("inserting at : " + this.physicalIndex);
 		this.document.insert(this.glyph, this.physicalIndex);
 		return true;
 	}
 
 	@Override
 	public void unExecute() {
+		//System.out.println("removing from " + this.physicalIndex + " " + this.glyph);
 		this.document.remove(this.physicalIndex);
 	}
 

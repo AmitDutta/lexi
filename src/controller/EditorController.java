@@ -90,15 +90,14 @@ public class EditorController implements IEditorController{
 				}
 			}			
 		}
-		else{			
+		else {
 			if (!param.getKeyEvent().isControlDown()){				
 					glyph = new Char(param.getKeyEvent().getKeyChar(), param.getFont());
 					this.InsertGlyph(glyph);
 					this.selectionRange = null;
-				}				
-		}			
+			}
+		}
 	}
-	
 
 	@Override
 	public void onImageInserted(InsertImageEventArgs param) {

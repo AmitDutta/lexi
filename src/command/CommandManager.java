@@ -25,6 +25,11 @@ public class CommandManager {
 	public Boolean execute(ICommand cmd){
 		Boolean val = cmd.execute() && cmd.canUndo();
 		if (val){
+			int size = this.commands.size();
+			for (int i = size - 1; i >= current + 1; i--){
+				this.commands.remove(i);
+			}
+			
 			this.commands.add(cmd);
 			this.current++;
 		}
