@@ -120,20 +120,14 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 
 	@Override
 	public void componentShown(ComponentEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void componentHidden(ComponentEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
 	}	
 	
 	@Override
@@ -146,17 +140,10 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	@Override
-	public void updateObserver(ModelChangedEventArgs args) {	
-		/*ViewEventArgs param = new ViewEventArgs(new SwingGraphics(this.getGraphics()), this.getTop(), this.getLeft(), this.getContentPane().getWidth(),
-				this.getContentPane().getHeight());
-		List<Row> rows = this.compositor.compose(args.getGlyphs(), param);
-		// System.out.println("at view update !!!");
-		this.controller.handleDrawing(rows, param);*/
+	public void updateObserver(ModelChangedEventArgs args) {
 		this.repaint(1);
 	}	
 	
@@ -170,18 +157,8 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		super.paint(g);
 		ViewEventArgs param = new ViewEventArgs(this.graphics, this.getTop(), this.getLeft(), this.getWidth(),
 				this.getHeight());
-		List<Row> rows = this.compositor.compose(this.document.getChildren(), param);		
-		// System.out.println("from view -->");
-		this.controller.handleDrawing(rows, param);	
-		
-		// draw selection
-		/* Graphics2D g2 = (Graphics2D) g;
-		g2.setColor(Color.BLACK);
-		g2.setStroke(new BasicStroke(2));
-		g2.drawLine(x1, y1, x2, y1);
-		g2.drawLine(x2, y1, x2, y2);
-		g2.drawLine(x2, y2, x1, y2);
-		g2.drawLine(x1, y2, x1, y1); */
+		List<Row> rows = this.compositor.compose(this.document.getChildren(), param);
+		this.controller.handleDrawing(rows, param);
 	}
 	
 	@Override
@@ -204,8 +181,6 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 
 	@Override
 	public void windowOpened(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -220,25 +195,21 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	@Override
 	public void windowIconified(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void windowDeiconified(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void windowActivated(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void windowDeactivated(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	private void handleScrolling(){
