@@ -4,6 +4,8 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
+import util.IVisitor;
+
 public class BackArrow extends Glyph {
 	
 	private String str;
@@ -57,5 +59,9 @@ public class BackArrow extends Glyph {
 	@Override
 	public String toString(){
 		return "Back Arrow Glyph: ["+ this.str + "]";
+	}
+
+	@Override
+	public void accept(IVisitor visitor) {
 	}
 }

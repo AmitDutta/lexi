@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.IVisitor;
 import viewmodel.UiGlyph;
 
 public class Row extends Glyph{
@@ -95,5 +96,10 @@ public class Row extends Glyph{
 
 	public void setTop(int top) {
 		this.top = top;
+	}
+
+	@Override
+	public void accept(IVisitor visitor) {
+		visitor.visitRow(this);
 	}
 }

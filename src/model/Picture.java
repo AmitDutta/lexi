@@ -7,6 +7,8 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
+import util.IVisitor;
+
 public class Picture extends Glyph {
 	
 	private BufferedImage image;
@@ -59,5 +61,10 @@ public class Picture extends Glyph {
 		}
 		
 		return this.image;
+	}
+
+	@Override
+	public void accept(IVisitor visitor) {
+		visitor.visitPicture(this);
 	}
 }

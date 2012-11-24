@@ -4,6 +4,8 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
+import util.IVisitor;
+
 public class Arrow extends Glyph {
 	
 	private String str;
@@ -57,5 +59,9 @@ public class Arrow extends Glyph {
 	@Override
 	public String toString(){
 		return "Arrow Glyph: ["+ this.str + "]";
+	}
+
+	@Override
+	public void accept(IVisitor visitor) {
 	}
 }

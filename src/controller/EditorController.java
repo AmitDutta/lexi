@@ -11,9 +11,11 @@ import model.Glyph;
 import model.Picture;
 import model.Row;
 import util.Constants;
+import util.IVisitor;
 import util.InsertImageEventArgs;
 import util.KeyPressedEventArgs;
 import util.MenuPressedEventArgs;
+import util.SpellingCheckingVisitor;
 import util.ViewEventArgs;
 import viewmodel.ConcreteDocument;
 import viewmodel.Document;
@@ -69,6 +71,13 @@ public class EditorController implements IEditorController{
 				cmd = new DeleteCommand(document, startFrom, endAt);
 				CommandManager.getInstance().execute(cmd);
 				this.selectionRange = null;
+			}
+		}
+		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'w'  && param.getKeyEvent().getKeyCode() == 87){
+			//Temporary spell checking by Control + W
+			IVisitor visitor = new SpellingCheckingVisitor();
+			for(Row row : this.logicalDocument.getRows()){
+				row.accept(visitor);
 			}
 		}
 		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'a'  && param.getKeyEvent().getKeyCode() == 65){

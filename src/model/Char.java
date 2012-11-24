@@ -6,6 +6,8 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 
+import util.IVisitor;
+
 public class Char extends Glyph {
 	
 	private char ch;
@@ -66,6 +68,19 @@ public class Char extends Glyph {
 	@Override
 	public String toString(){
 		return "Character Glyph: ["+ this.ch + "]";
+	}
+	
+	@Override
+	public void accept(IVisitor visitor) {
+		visitor.visitChar(this);
+	}
+	
+	public int getCharaCode(){
+		return (int) this.ch;
+	}
+	
+	public char getChar(){
+		return this.ch;
 	}
 	
 	private FontMetrics getFontrMetrics(Graphics graphics){

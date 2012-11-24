@@ -35,6 +35,7 @@ import util.InsertImageEventArgs;
 import util.KeyPressedEventArgs;
 import util.MenuPressedEventArgs;
 import util.ModelChangedEventArgs;
+import util.SpellChecker;
 import util.ViewEventArgs;
 import viewmodel.SelectionRange;
 import viewmodel.UiGlyph;
@@ -104,6 +105,8 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		this.x2 = this.y2 = -20;
 		
 		this.graphics = this.getGraphics();
+		
+		SpellChecker.getInstance().LoadDictionary("/mnt/Vault/Workspace/Lexi-eclipse-workspace/Lexi/dictionary/american-english");
 	}	
 
 	@Override
