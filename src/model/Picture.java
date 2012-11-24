@@ -7,7 +7,7 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
-import util.IVisitor;
+import visitor.IVisitor;
 
 public class Picture extends Glyph {
 	

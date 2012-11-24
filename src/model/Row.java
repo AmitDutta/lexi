@@ -4,8 +4,8 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.IVisitor;
 import viewmodel.UiGlyph;
+import visitor.IVisitor;
 
 public class Row extends Glyph{
 		

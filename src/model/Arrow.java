@@ -4,7 +4,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
-import util.IVisitor;
+import visitor.IVisitor;
 
 public class Arrow extends Glyph {
 	

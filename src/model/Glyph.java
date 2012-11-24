@@ -2,7 +2,7 @@ package model;
 
 import java.awt.Graphics;
 
-import util.IVisitor;
+import visitor.IVisitor;
 
 public abstract class Glyph {
 

@@ -6,7 +6,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 
-import util.IVisitor;
+import visitor.IVisitor;
 
 public class Char extends Glyph {
 	

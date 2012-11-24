@@ -1,8 +1,9 @@
-package util;
+package visitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import util.SpellChecker;
 import viewmodel.UiGlyph;
 
 import model.*;
