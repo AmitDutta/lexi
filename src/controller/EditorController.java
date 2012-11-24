@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 
 import model.Arrow;
-import model.BackArrow;
 import model.Char;
 import model.Composition;
 import model.Glyph;
@@ -22,10 +21,10 @@ import viewmodel.ScrollableDocument;
 import viewmodel.SelectionRange;
 import viewmodel.UiGlyph;
 
-import command.ICommand;
-import command.InsertCommand;
 import command.CommandManager;
 import command.DeleteCommand;
+import command.ICommand;
+import command.InsertCommand;
 import command.ToggleBoldCommand;
 import command.ToggleItalicCommand;
 
