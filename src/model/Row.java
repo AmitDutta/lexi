@@ -57,6 +57,11 @@ public class Row extends Glyph{
 	@Override
 	public void select(Graphics graphics, int x, int y){
 		this.select(graphics, x, y, 0, this.getUiGlyphs().size() - 1);
+	}	
+
+	@Override
+	public void accept(IVisitor visitor) {
+		visitor.visitRow(this);
 	}
 	
 	public void select(Graphics graphics, int x, int y, int start, int end){
@@ -96,10 +101,5 @@ public class Row extends Glyph{
 
 	public void setTop(int top) {
 		this.top = top;
-	}
-
-	@Override
-	public void accept(IVisitor visitor) {
-		visitor.visitRow(this);
 	}
 }

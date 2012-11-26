@@ -30,6 +30,7 @@ import model.ICompositor;
 import model.Row;
 import model.SimpleCompositor;
 import util.Constants;
+import util.IMainWindow;
 import util.IObserver;
 import util.InsertImageEventArgs;
 import util.KeyPressedEventArgs;
@@ -105,6 +106,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		this.x2 = this.y2 = -20;
 		
 		this.graphics = this.getGraphics();
+		this.controller.setGraphics(graphics);
 		
 		SpellChecker.getInstance().LoadDictionary("/mnt/Vault/Workspace/Lexi-eclipse-workspace/Lexi/dictionary/american-english");
 	}	
@@ -393,5 +395,5 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
-	}		
+	}	
 }

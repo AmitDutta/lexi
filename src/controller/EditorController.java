@@ -1,8 +1,12 @@
 package controller;
 
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.sun.xml.internal.ws.addressing.model.MissingAddressingHeaderException;
 
 import model.Arrow;
 import model.Char;
@@ -11,10 +15,12 @@ import model.Glyph;
 import model.Picture;
 import model.Row;
 import util.Constants;
+import util.ISplleingErrorHandler;
 import util.InsertImageEventArgs;
 import util.KeyPressedEventArgs;
 import util.MenuPressedEventArgs;
 import util.ViewEventArgs;
+import viewmodel.BorderedDocument;
 import viewmodel.ConcreteDocument;
 import viewmodel.Document;
 import viewmodel.ScrollableDocument;
@@ -30,7 +36,7 @@ import command.InsertCommand;
 import command.ToggleBoldCommand;
 import command.ToggleItalicCommand;
 
-public class EditorController implements IEditorController{
+public class EditorController implements IEditorController, ISplleingErrorHandler{
 	
 	private Composition document;
 	private Document logicalDocument;
@@ -75,7 +81,8 @@ public class EditorController implements IEditorController{
 		}
 		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'w'  && param.getKeyEvent().getKeyCode() == 87){
 			//Temporary spell checking by Control + W
-			IVisitor visitor = new SpellingCheckingVisitor();
+			IVisitor visitor = new SpellingCheckingVisitor(this);
+			this.misspelledGlyphs = new ArrayList<UiGlyph[]>();
 			for(Row row : this.logicalDocument.getRows()){
 				row.accept(visitor);
 			}
@@ -138,7 +145,7 @@ public class EditorController implements IEditorController{
 			// turn on scrolling
 			List<Row> rows = this.logicalDocument.getRows();
 			this.logicalDocument = new ScrollableDocument(this.logicalDocument);
-			//this.logicalDocument = new BorderedDocument(new ScrollableDocument(this.logicalDocument));
+			// this.logicalDocument = new BorderedDocument(new ScrollableDocument(this.logicalDocument));
 			this.logicalDocument.setRows(rows);			
 		}
 		else{
@@ -156,7 +163,16 @@ public class EditorController implements IEditorController{
 		this.updateLogicalLocations(args);
 		if (this.selectionRange != null){
 			this.selectGlyphs(args);
-		}		
+		}
+		
+		if (this.misspelledGlyphs!= null && this.misspelledGlyphs.size() > 0){
+			// highlight misspelled words
+			for (UiGlyph[] uiGlyphs : this.misspelledGlyphs){
+				for (UiGlyph uiGlyph : uiGlyphs){
+					uiGlyph.getGlyph().select(graphics, uiGlyph.getPosition().x, uiGlyph.getPosition().y);
+				}				
+			}
+		}
 	}
 	
 	public void selectGlyphs(ViewEventArgs args){
@@ -237,5 +253,20 @@ public class EditorController implements IEditorController{
 			CommandManager.getInstance().execute(cmd);
 			this.selectionRange = null;
 		}
+	}
+	
+	private List<UiGlyph[]> misspelledGlyphs;
+
+	@Override
+	public void handleSpellingError(String word, UiGlyph[] glyphs) {
+		for (UiGlyph uiGlyph : glyphs){
+			// uiGlyph.getGlyph().select(graphics, uiGlyph.getPosition().x, uiGlyph.getPosition().y);
+			this.misspelledGlyphs.add(glyphs);
+		}
+	}
+	
+	private Graphics graphics;
+	public void setGraphics(Graphics graphics){
+		this.graphics = graphics;
 	}
 }
