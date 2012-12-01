@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -33,7 +34,7 @@ public class Arrow extends Glyph {
 	}
 	
 	@Override
-	public void select(Graphics graphics, int x, int y){		
+	public void select(Graphics graphics, Color hightlightColor, Color fontColor, int x, int y){		
 	}
 	
 	@Override

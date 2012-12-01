@@ -9,41 +9,47 @@ import viewmodel.UiGlyph;
 
 import model.*;
 
-public class SpellingCheckingVisitor extends IVisitor{
+public class SpellingCheckingVisitor extends IVisitor {
 
 	private StringBuffer currentWord;
 	private List<Glyph> currentGlyphs;
 	private List<String> misspellings;
 	private List<UiGlyph> uiGlyphs;
 	private ISplleingErrorHandler spllingErrorHandler;
-	
-	public SpellingCheckingVisitor(){
+
+	public SpellingCheckingVisitor() {
 		this.currentWord = new StringBuffer();
 		this.misspellings = new ArrayList<String>();
 		this.currentGlyphs = new ArrayList<Glyph>();
 		this.uiGlyphs = new ArrayList<UiGlyph>();
 	}
-	
-	public SpellingCheckingVisitor(ISplleingErrorHandler spllingErrorHandler){
+
+	public SpellingCheckingVisitor(ISplleingErrorHandler spllingErrorHandler) {
 		this();
 		this.spllingErrorHandler = spllingErrorHandler;
 	}
-	
+
 	@Override
 	public void visitChar(Char character) {
-		if (Character.isAlphabetic(character.getCharaCode()) || Character.isDigit(character.getCharaCode())){
+		if (Character.isAlphabetic(character.getCharacterCode())
+				|| Character.isDigit(character.getCharacterCode())) {			
 			this.currentWord.append(character.getChar());
 			this.currentGlyphs.add(character);
-		}
-		else {
+		} else {
 			String word = this.currentWord.toString();
-			if (!word.equals("") && SpellChecker.getInstance().isMisspelled(word)){
+			if (!word.equals("")
+					&& SpellChecker.getInstance().isMisspelled(word)) {
 				this.misspellings.add(word);
-				if (this.spllingErrorHandler != null){
-					this.spllingErrorHandler.handleSpellingError(this.currentWord.toString(), this.uiGlyphs.toArray(new UiGlyph[this.uiGlyphs.size()]));
+				this.uiGlyphs.remove(this.uiGlyphs.size() - 1);
+				if (this.spllingErrorHandler != null) {
+					this.spllingErrorHandler
+							.handleSpellingError(this.currentWord.toString(),
+									this.uiGlyphs
+											.toArray(new UiGlyph[this.uiGlyphs
+													.size()]));
 				}
 			}
-			
+
 			this.currentWord = new StringBuffer();
 			this.currentGlyphs.clear();
 			this.uiGlyphs.clear();
@@ -52,32 +58,39 @@ public class SpellingCheckingVisitor extends IVisitor{
 
 	@Override
 	public void visitPicture(Picture picture) {
-	}	
-	
+	}
+
 	@Override
 	public void visitRow(Row row) {
 		List<UiGlyph> glyphs = row.getUiGlyphs();
-		for (UiGlyph uiGlyph : glyphs){
+		for (UiGlyph uiGlyph : glyphs) {
 			this.uiGlyphs.add(uiGlyph);
 			uiGlyph.getGlyph().accept(this);
 		}
-		
-		/*This checking is required for last word. */
-		if (this.currentWord.length() > 0){
+
+		/* This checking is required for last word. */
+		if (this.currentWord.length() > 0) {
 			String word = this.currentWord.toString();
-			if (!word.equals("") && SpellChecker.getInstance().isMisspelled(word)){
+			//System.out.println(word.length());
+			if (!word.equals("")
+					&& SpellChecker.getInstance().isMisspelled(word)) {				
 				this.misspellings.add(word);
-				if (this.spllingErrorHandler != null){
-					this.spllingErrorHandler.handleSpellingError(this.currentWord.toString(), this.uiGlyphs.toArray(new UiGlyph[this.uiGlyphs.size()]));
+				if (this.spllingErrorHandler != null) {
+					System.out.println(this.uiGlyphs.size());
+					this.spllingErrorHandler
+							.handleSpellingError(this.currentWord.toString(),
+									this.uiGlyphs
+											.toArray(new UiGlyph[this.uiGlyphs
+													.size()]));
 				}
 			}
-			
+
 			this.currentWord = new StringBuffer();
 			this.currentGlyphs.clear();
 		}
 	}
-	
-	public List<String> getMisspellings(){
+
+	public List<String> getMisspellings() {
 		return this.misspellings;
 	}
 }

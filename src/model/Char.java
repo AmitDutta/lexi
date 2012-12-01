@@ -30,13 +30,13 @@ public class Char extends Glyph {
 	}
 	
 	@Override
-	public void select(Graphics graphics, int x, int y){
+	public void select(Graphics graphics, Color hightlightColor, Color fontColor, int x, int y){
 		Color previousColor = graphics.getColor();
-		graphics.setColor(Color.black);
+		graphics.setColor(hightlightColor);
 		Rectangle2D rect = this.getFontrMetrics(graphics).getStringBounds(Character.toString(ch), graphics);
 		graphics.drawRect(x, y - (int)rect.getHeight(), (int)rect.getWidth(), (int)rect.getHeight());
 		graphics.fillRect(x, y - (int)rect.getHeight(), (int)rect.getWidth(), (int)rect.getHeight());
-		graphics.setColor(Color.white);
+		graphics.setColor(fontColor);
 		this.draw(graphics, x, y);
 		graphics.setColor(previousColor);
 	}
@@ -75,7 +75,7 @@ public class Char extends Glyph {
 		visitor.visitChar(this);
 	}
 	
-	public int getCharaCode(){
+	public int getCharacterCode(){
 		return (int) this.ch;
 	}
 	

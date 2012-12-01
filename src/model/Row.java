@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +56,8 @@ public class Row extends Glyph{
 	}
 	
 	@Override
-	public void select(Graphics graphics, int x, int y){
-		this.select(graphics, x, y, 0, this.getUiGlyphs().size() - 1);
+	public void select(Graphics graphics, Color hightlightColor, Color fontColor, int x, int y){
+		this.select(graphics, hightlightColor, fontColor, x, y, 0, this.getUiGlyphs().size() - 1);
 	}	
 
 	@Override
@@ -64,10 +65,10 @@ public class Row extends Glyph{
 		visitor.visitRow(this);
 	}
 	
-	public void select(Graphics graphics, int x, int y, int start, int end){
+	public void select(Graphics graphics, Color hightlightColor, Color fontColor, int x, int y, int start, int end){
 		for (int i = start; i <= end; i++){
 			UiGlyph uiGlyph = this.getUiGlyphs().get(i);				
-			uiGlyph.getGlyph().select(graphics, uiGlyph.getPosition().x, uiGlyph.getPosition().y);
+			uiGlyph.getGlyph().select(graphics, hightlightColor, fontColor, uiGlyph.getPosition().x, uiGlyph.getPosition().y);
 		}
 	}
 

@@ -32,9 +32,9 @@ public class Picture extends Glyph {
 	}	
 	
 	@Override
-	public void select(Graphics graphics, int x, int y){
+	public void select(Graphics graphics, Color hightlightColor, Color fontColor, int x, int y){
 		Color previousColor = graphics.getColor();
-		graphics.setColor(Color.BLACK);		
+		graphics.setColor(hightlightColor);		
 		graphics.drawRect(x, y - 2, this.getImage().getWidth() + 2 , this.getImage().getHeight() + 2);
 		graphics.fillRect(x, y - 2, this.getImage().getWidth() + 2, this.getImage().getHeight() + 2);		
 		graphics.setColor(previousColor);

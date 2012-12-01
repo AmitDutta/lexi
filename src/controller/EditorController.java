@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -41,27 +42,17 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 	private Composition document;
 	private Document logicalDocument;
 	private int index;
-	public SelectionRange selectionRange;
+	private Boolean spellCheckEnabled;
+	private SelectionRange selectionRange;
+	private List<UiGlyph[]> misspelledGlyphs;
+	private Graphics graphics;
 	
 	public EditorController(Composition document){
 		this.index = 0;		
 		this.document = document;
 		this.logicalDocument = new ConcreteDocument();
-	}
-	
-	public int getIndex(){
-		return this.index;
-	}
-	
-	public int getStartFrom(){
-		return this.logicalDocument.getRows().get(this.selectionRange.getStartRow()).getUiGlyphs()
-				.get(this.selectionRange.getStartCol()).getPhysicalIndex();
-	}
-	
-	public int getEndAt(){
-		return this.logicalDocument.getRows().get(this.selectionRange.getEndRow()).getUiGlyphs()
-		.get(this.selectionRange.getEndCol()).getPhysicalIndex();
-	}
+		this.spellCheckEnabled = false;
+	}	
 
 	@Override
 	public void onKeyPressed(KeyPressedEventArgs param) {
@@ -79,14 +70,14 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 				this.selectionRange = null;
 			}
 		}
-		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'w'  && param.getKeyEvent().getKeyCode() == 87){
+		/*else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'w'  && param.getKeyEvent().getKeyCode() == 87){
 			//Temporary spell checking by Control + W
 			IVisitor visitor = new SpellingCheckingVisitor(this);
 			this.misspelledGlyphs = new ArrayList<UiGlyph[]>();
 			for(Row row : this.logicalDocument.getRows()){
 				row.accept(visitor);
 			}
-		}
+		}*/
 		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'a'  && param.getKeyEvent().getKeyCode() == 65){
 			glyph = new Arrow(param.getFont());
 			this.document.insert(glyph, this.document.getChildren().size());
@@ -148,12 +139,19 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 			// this.logicalDocument = new BorderedDocument(new ScrollableDocument(this.logicalDocument));
 			this.logicalDocument.setRows(rows);			
 		}
-		else{
+		else if (param.getMenuItem().getText() == Constants.ScrollOffText) {
 			// turn scrolling off
 			List<Row> rows = this.logicalDocument.getRows();
 			this.logicalDocument = new ConcreteDocument();
 			this.logicalDocument.setRows(rows);
 			this.index = 0;
+		}
+		else if (param.getMenuItem().getText() == Constants.SpellCheckOnText){
+			this.spellCheckEnabled = true;
+		}
+		else if (param.getMenuItem().getText() == Constants.SpellCheckOffText){
+			this.spellCheckEnabled = false;
+			this.misspelledGlyphs = null;
 		}
 	}
 	
@@ -165,13 +163,48 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 			this.selectGlyphs(args);
 		}
 		
+		if (this.spellCheckEnabled){
+			IVisitor visitor = new SpellingCheckingVisitor(this);
+			this.misspelledGlyphs = new ArrayList<UiGlyph[]>();
+			for(Row row : rows){
+				row.accept(visitor);
+			}
+		}
+		
 		if (this.misspelledGlyphs!= null && this.misspelledGlyphs.size() > 0){
-			// highlight misspelled words
 			for (UiGlyph[] uiGlyphs : this.misspelledGlyphs){
 				for (UiGlyph uiGlyph : uiGlyphs){
-					uiGlyph.getGlyph().select(graphics, uiGlyph.getPosition().x, uiGlyph.getPosition().y);
+					uiGlyph.getGlyph().select(graphics, Color.RED, Color.WHITE, uiGlyph.getPosition().x, uiGlyph.getPosition().y);
 				}				
 			}
+		}
+	}
+	
+	@Override
+	public void handleSpellingError(String word, UiGlyph[] glyphs) {
+		System.out.println(glyphs.length);
+		for (UiGlyph uiGlyph : glyphs){
+			this.misspelledGlyphs.add(glyphs);
+		}
+	}
+	
+	public int getIndex(){
+		return this.index;
+	}
+	
+	public int getStartFrom(){
+		return this.logicalDocument.getRows().get(this.selectionRange.getStartRow()).getUiGlyphs()
+				.get(this.selectionRange.getStartCol()).getPhysicalIndex();
+	}
+	
+	public int getEndAt(){
+		return this.logicalDocument.getRows().get(this.selectionRange.getEndRow()).getUiGlyphs()
+		.get(this.selectionRange.getEndCol()).getPhysicalIndex();
+	}
+	
+	public void setSelectionRange(SelectionRange selectionRange){
+		if (selectionRange != null){
+			this.selectionRange = selectionRange;
 		}
 	}
 	
@@ -189,7 +222,7 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 				end = this.selectionRange.getEndCol();
 			}
 			
-			row.select(args.getGraphics(), row.getTop(), row.getLeft(), start, end);
+			row.select(args.getGraphics(), Color.BLACK, Color.WHITE, row.getTop(), row.getLeft(), start, end);
 		}
 	}
 	
@@ -244,8 +277,7 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 		}
 		else if (this.selectionRange != null && this.selectionRange.isSingleGlyphSelection()){
 			physicalIndex = this.logicalDocument.getRows().get(this.selectionRange.getStartRow()).getUiGlyphs()
-					.get(this.selectionRange.getStartCol()).getPhysicalIndex() + 1 ;
-			
+					.get(this.selectionRange.getStartCol()).getPhysicalIndex() + 1 ;			
 		}
 		
 		if (physicalIndex != Integer.MIN_VALUE){			
@@ -255,17 +287,6 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 		}
 	}
 	
-	private List<UiGlyph[]> misspelledGlyphs;
-
-	@Override
-	public void handleSpellingError(String word, UiGlyph[] glyphs) {
-		for (UiGlyph uiGlyph : glyphs){
-			// uiGlyph.getGlyph().select(graphics, uiGlyph.getPosition().x, uiGlyph.getPosition().y);
-			this.misspelledGlyphs.add(glyphs);
-		}
-	}
-	
-	private Graphics graphics;
 	public void setGraphics(Graphics graphics){
 		this.graphics = graphics;
 	}

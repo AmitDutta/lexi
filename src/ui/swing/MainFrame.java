@@ -53,7 +53,8 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	private JMenuItem imageMenuItem;
 	private JMenuItem aboutMenuItem;
 	private JMenuItem exitMenuItem;
-	private JMenuItem scrollMenuItem;	
+	private JMenuItem scrollMenuItem;
+	private JMenuItem spellCheckMenuItem;
 	private ICompositor compositor;
 	private int x1, y1, x2, y2;
 	
@@ -83,6 +84,10 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		this.scrollMenuItem = new JMenuItem(Constants.ScrollOnText);
 		this.scrollMenuItem.addActionListener(this);
 		mnFile.add(this.scrollMenuItem);
+		
+		this.spellCheckMenuItem = new JMenuItem(Constants.SpellCheckOnText);
+		this.spellCheckMenuItem.addActionListener(this);
+		mnFile.add(this.spellCheckMenuItem);
 	
 		this.exitMenuItem = new JMenuItem("Exit");
 		this.exitMenuItem.addActionListener(this);
@@ -154,7 +159,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	
 	@Override
 	public void update(Graphics g){
-		paint(g);
+		this.paint(g);
 	}
 	
 	@Override
@@ -173,6 +178,9 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		}
 		else if (e.getSource().equals(this.scrollMenuItem)){
 			this.handleScrolling();
+		}
+		else if (e.getSource().equals(this.spellCheckMenuItem)){
+			this.handleSpellChecking();
 		}
 		else if (e.getSource().equals(this.aboutMenuItem)){
 			JOptionPane.showMessageDialog(this, "Lext editor implementation\nDeveloper: Amit Dutta" +
@@ -224,6 +232,18 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		}
 		else{
 			this.scrollMenuItem.setText(Constants.ScrollOffText);
+		}
+		
+		this.repaint();
+	}
+	
+	private void handleSpellChecking(){
+		this.controller.onMenuItemPressed(new MenuPressedEventArgs(this.spellCheckMenuItem));
+		if (this.spellCheckMenuItem.getText() == Constants.SpellCheckOffText){
+			this.spellCheckMenuItem.setText(Constants.SpellCheckOnText);
+		}
+		else{
+			this.spellCheckMenuItem.setText(Constants.SpellCheckOffText);
 		}
 		
 		this.repaint();
@@ -380,7 +400,7 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		}
 		
 		if (range.getStartRow() < rows.size()){
-			this.controller.selectionRange = range;
+			this.controller.setSelectionRange(range);
 			this.repaint();
 		}
 	}
