@@ -7,8 +7,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.xml.internal.ws.addressing.model.MissingAddressingHeaderException;
-
 import model.Arrow;
 import model.Char;
 import model.Composition;
@@ -70,14 +68,6 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 				this.selectionRange = null;
 			}
 		}
-		/*else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'w'  && param.getKeyEvent().getKeyCode() == 87){
-			//Temporary spell checking by Control + W
-			IVisitor visitor = new SpellingCheckingVisitor(this);
-			this.misspelledGlyphs = new ArrayList<UiGlyph[]>();
-			for(Row row : this.logicalDocument.getRows()){
-				row.accept(visitor);
-			}
-		}*/
 		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'a'  && param.getKeyEvent().getKeyCode() == 65){
 			glyph = new Arrow(param.getFont());
 			this.document.insert(glyph, this.document.getChildren().size());
@@ -107,7 +97,8 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 				}
 			}
 		}
-		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_PAGE_DOWN){			
+		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_PAGE_DOWN){
+			System.out.println(this.logicalDocument.getRows().size());
 			if (this.logicalDocument.needScrolling(param)){
 				if (index < (this.logicalDocument.getRows().size() - 1)){
 					index += 1;					
@@ -164,27 +155,17 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 		}
 		
 		if (this.spellCheckEnabled){
-			IVisitor visitor = new SpellingCheckingVisitor(this);
-			this.misspelledGlyphs = new ArrayList<UiGlyph[]>();
+			IVisitor visitor = new SpellingCheckingVisitor(this);			
 			for(Row row : rows){
 				row.accept(visitor);
-			}
-		}
-		
-		if (this.misspelledGlyphs!= null && this.misspelledGlyphs.size() > 0){
-			for (UiGlyph[] uiGlyphs : this.misspelledGlyphs){
-				for (UiGlyph uiGlyph : uiGlyphs){
-					uiGlyph.getGlyph().select(graphics, Color.RED, Color.WHITE, uiGlyph.getPosition().x, uiGlyph.getPosition().y);
-				}				
 			}
 		}
 	}
 	
 	@Override
 	public void handleSpellingError(String word, UiGlyph[] glyphs) {
-		System.out.println(glyphs.length);
 		for (UiGlyph uiGlyph : glyphs){
-			this.misspelledGlyphs.add(glyphs);
+			uiGlyph.getGlyph().select(this.graphics, Color.RED, Color.WHITE, uiGlyph.getPosition().x, uiGlyph.getPosition().y);
 		}
 	}
 	

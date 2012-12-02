@@ -26,7 +26,7 @@ public class BorderedDocument extends Document{
 
 	@Override
 	public void draw(List<Row> rows, ViewEventArgs args, int from) {
-		//this.setRows(rows);
+		this.setRows(rows);
 		args.getGraphics().drawRect(args.getLeft() - 2, args.getTop() - 10, args.getFrameWidth() - 10, args.getFrameHeight() - 65);
 		this.document.draw(rows, args, from);
 	}

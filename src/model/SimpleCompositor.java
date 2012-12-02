@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.*;
+import util.ViewEventArgs;
 import viewmodel.UiGlyph;
 
 public class SimpleCompositor implements ICompositor{
@@ -21,7 +21,7 @@ public class SimpleCompositor implements ICompositor{
 		
 		Row currentRow = new Row();
 		int currentTop = args.getTop();
-		currentRow.setStartIndex(0); // glyph start position
+		currentRow.setStartIndex(0);
 		currentRow.setLeft(args.getLeft());
 		currentRow.setTop(currentTop);
 		rows.add(currentRow);
@@ -30,12 +30,10 @@ public class SimpleCompositor implements ICompositor{
 			Glyph glyph = glyphs.get(i);
 			Point position = new Point(currentLeft, currentTop);
 			UiGlyph uiGlyph = new UiGlyph(glyph, position, i);
-			currentRow.getUiGlyphs().add(uiGlyph);
-			// currentRow.getItems().add(glyph);			
+			currentRow.getUiGlyphs().add(uiGlyph);			
 			if ((currentLeft + 20) >= args.getFrameWidth()){
 				currentRow.setEndIndex(i);
-				if (i == glyphs.size() - 1){
-					/*No need to add a new Row*/
+				if (i == glyphs.size() - 1){					
 					break;
 				}
 								

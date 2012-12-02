@@ -13,13 +13,11 @@ public class SpellingCheckingVisitor extends IVisitor {
 
 	private StringBuffer currentWord;
 	private List<Glyph> currentGlyphs;
-	private List<String> misspellings;
 	private List<UiGlyph> uiGlyphs;
 	private ISplleingErrorHandler spllingErrorHandler;
 
 	public SpellingCheckingVisitor() {
 		this.currentWord = new StringBuffer();
-		this.misspellings = new ArrayList<String>();
 		this.currentGlyphs = new ArrayList<Glyph>();
 		this.uiGlyphs = new ArrayList<UiGlyph>();
 	}
@@ -32,28 +30,31 @@ public class SpellingCheckingVisitor extends IVisitor {
 	@Override
 	public void visitChar(Char character) {
 		if (Character.isAlphabetic(character.getCharacterCode())
-				|| Character.isDigit(character.getCharacterCode())) {			
+				|| Character.isDigit(character.getCharacterCode())) {
 			this.currentWord.append(character.getChar());
 			this.currentGlyphs.add(character);
 		} else {
-			String word = this.currentWord.toString();
-			if (!word.equals("")
-					&& SpellChecker.getInstance().isMisspelled(word)) {
-				this.misspellings.add(word);
-				this.uiGlyphs.remove(this.uiGlyphs.size() - 1);
-				if (this.spllingErrorHandler != null) {
-					this.spllingErrorHandler
-							.handleSpellingError(this.currentWord.toString(),
-									this.uiGlyphs
-											.toArray(new UiGlyph[this.uiGlyphs
-													.size()]));
-				}
-			}
-
-			this.currentWord = new StringBuffer();
-			this.currentGlyphs.clear();
+			this.uiGlyphs.remove(this.uiGlyphs.size() - 1);
+			this.spellCheck();
 			this.uiGlyphs.clear();
 		}
+	}
+
+	private void spellCheck() {
+		String word = this.currentWord.toString();
+		if (!word.equals("")
+				&& SpellChecker.getInstance().isMisspelled(word)) {			
+			if (this.spllingErrorHandler != null) {
+				this.spllingErrorHandler
+						.handleSpellingError(this.currentWord.toString(),
+								this.uiGlyphs
+										.toArray(new UiGlyph[this.uiGlyphs
+												.size()]));
+			}
+		}
+
+		this.currentWord = new StringBuffer();
+		this.currentGlyphs.clear();
 	}
 
 	@Override
@@ -70,27 +71,7 @@ public class SpellingCheckingVisitor extends IVisitor {
 
 		/* This checking is required for last word. */
 		if (this.currentWord.length() > 0) {
-			String word = this.currentWord.toString();
-			//System.out.println(word.length());
-			if (!word.equals("")
-					&& SpellChecker.getInstance().isMisspelled(word)) {				
-				this.misspellings.add(word);
-				if (this.spllingErrorHandler != null) {
-					System.out.println(this.uiGlyphs.size());
-					this.spllingErrorHandler
-							.handleSpellingError(this.currentWord.toString(),
-									this.uiGlyphs
-											.toArray(new UiGlyph[this.uiGlyphs
-													.size()]));
-				}
-			}
-
-			this.currentWord = new StringBuffer();
-			this.currentGlyphs.clear();
+			this.spellCheck();
 		}
-	}
-
-	public List<String> getMisspellings() {
-		return this.misspellings;
 	}
 }

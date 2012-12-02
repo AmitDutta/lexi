@@ -67,7 +67,7 @@ public class Row extends Glyph{
 	
 	public void select(Graphics graphics, Color hightlightColor, Color fontColor, int x, int y, int start, int end){
 		for (int i = start; i <= end; i++){
-			UiGlyph uiGlyph = this.getUiGlyphs().get(i);				
+			UiGlyph uiGlyph = this.getUiGlyphs().get(i);
 			uiGlyph.getGlyph().select(graphics, hightlightColor, fontColor, uiGlyph.getPosition().x, uiGlyph.getPosition().y);
 		}
 	}
