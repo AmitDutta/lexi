@@ -97,8 +97,7 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 				}
 			}
 		}
-		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_PAGE_DOWN){
-			System.out.println(this.logicalDocument.getRows().size());
+		else if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_PAGE_DOWN){			
 			if (this.logicalDocument.needScrolling(param)){
 				if (index < (this.logicalDocument.getRows().size() - 1)){
 					index += 1;					
