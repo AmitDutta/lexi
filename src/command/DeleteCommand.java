@@ -12,29 +12,29 @@ public class DeleteCommand implements ICommand {
 	private int startFrom;
 	private int endAt;
 	private List<Glyph> buffer;
-	
-	public DeleteCommand(Composition document, int startFrom, int endAt){
+
+	public DeleteCommand(Composition document, int startFrom, int endAt) {
 		this.document = document;
 		this.startFrom = startFrom;
 		this.endAt = endAt;
 		this.buffer = new ArrayList<Glyph>();
-		for (int i = this.startFrom; i <= this.endAt; i++){
+		for (int i = this.startFrom; i <= this.endAt; i++) {
 			this.buffer.add(this.document.getChildren().get(i));
 		}
 	}
-	
+
 	@Override
-	public boolean execute() {		
-		try{
+	public boolean execute() {
+		try {
 			/* Always delete in reverse order */
 			int i = this.endAt;
-			while (i >= this.startFrom){
+			while (i >= this.startFrom) {
 				this.document.remove(i);
 				i--;
 			}
-			
+
 			return true;
-		}catch(Exception ex){
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
 		}
@@ -42,18 +42,18 @@ public class DeleteCommand implements ICommand {
 
 	@Override
 	public void unExecute() {
-		try{
-			int i,j;
-			for (i = startFrom, j = 0; i <= this.endAt; i++, j++){
+		try {
+			int i, j;
+			for (i = startFrom, j = 0; i <= this.endAt; i++, j++) {
 				this.document.insert(this.buffer.get(j), i);
 			}
-		}catch (Exception ex){
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 
 	@Override
-	public boolean canUndo() {		
+	public boolean canUndo() {
 		return true;
 	}
 }
