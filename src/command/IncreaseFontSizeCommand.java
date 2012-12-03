@@ -7,7 +7,7 @@ import java.util.List;
 
 import model.Composition;
 
-public class ToggleBoldCommand implements ICommand {
+public class IncreaseFontSizeCommand implements ICommand {
 
 	private Graphics graphics;
 	private Composition document;
@@ -15,7 +15,7 @@ public class ToggleBoldCommand implements ICommand {
 	private int endAt;
 	private List<Font> previousFonts;
 
-	public ToggleBoldCommand(Graphics graphics, Composition document,
+	public IncreaseFontSizeCommand(Graphics graphics, Composition document,
 			int startFrom, int endAt) {
 		this.graphics = graphics;
 		this.document = document;
@@ -33,8 +33,7 @@ public class ToggleBoldCommand implements ICommand {
 				Font previousFont = this.document.getChildren().get(i)
 						.getFont();
 				Font newFont = new Font(previousFont.getName(),
-						previousFont.getStyle() | Font.BOLD,
-						previousFont.getSize());
+						previousFont.getStyle(), previousFont.getSize() + 1);
 				fonts.add(newFont);
 			}
 
@@ -50,7 +49,7 @@ public class ToggleBoldCommand implements ICommand {
 	@Override
 	public void unExecute() {
 		this.document
-		.updateFont(this.previousFonts, this.startFrom, this.endAt);
+				.updateFont(this.previousFonts, this.startFrom, this.endAt);
 	}
 
 	@Override

@@ -7,15 +7,14 @@ import java.util.List;
 
 import model.Composition;
 
-public class ToggleBoldCommand implements ICommand {
-
+public class DecreaseFontSizeCommand implements ICommand {
 	private Graphics graphics;
 	private Composition document;
 	private int startFrom;
-	private int endAt;
+	private int endAt;	
 	private List<Font> previousFonts;
 
-	public ToggleBoldCommand(Graphics graphics, Composition document,
+	public DecreaseFontSizeCommand(Graphics graphics, Composition document,
 			int startFrom, int endAt) {
 		this.graphics = graphics;
 		this.document = document;
@@ -33,8 +32,7 @@ public class ToggleBoldCommand implements ICommand {
 				Font previousFont = this.document.getChildren().get(i)
 						.getFont();
 				Font newFont = new Font(previousFont.getName(),
-						previousFont.getStyle() | Font.BOLD,
-						previousFont.getSize());
+						previousFont.getStyle(), previousFont.getSize() - 1);
 				fonts.add(newFont);
 			}
 
@@ -57,12 +55,12 @@ public class ToggleBoldCommand implements ICommand {
 	public boolean canUndo() {
 		return true;
 	}
-
+	
 	private void loadPreviousFonts() {
 		this.previousFonts = new ArrayList<Font>();
 		for (int i = this.startFrom; i <= this.endAt; i++) {
 			this.previousFonts
 					.add(this.document.getChildren().get(i).getFont());
 		}
-	}
+	}	
 }

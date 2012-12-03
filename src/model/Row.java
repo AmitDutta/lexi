@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,67 +9,80 @@ import java.util.List;
 import viewmodel.UiGlyph;
 import visitor.IVisitor;
 
-public class Row extends Glyph{
-		
+public class Row extends Glyph {
+
 	private int startIndex;
 	private int endIndex;
 	private int left;
 	private int top;
 	private List<UiGlyph> uiGlyphs;
-	
-	public Row(){		
+
+	public Row() {
 		this.uiGlyphs = new ArrayList<UiGlyph>();
 	}
-	
-	public List<UiGlyph> getUiGlyphs(){
+
+	public List<UiGlyph> getUiGlyphs() {
 		return this.uiGlyphs;
 	}
-	
+
 	@Override
-	public int getHeight(){
+	public int getHeight() {
 		int height = 0;
-		for (UiGlyph uiGlyph : this.uiGlyphs){
-			if (height < uiGlyph.getGlyph().getHeight()){
+		for (UiGlyph uiGlyph : this.uiGlyphs) {
+			if (height < uiGlyph.getGlyph().getHeight()) {
 				height = uiGlyph.getGlyph().getHeight();
-			}			
+			}
 		}
-		
+
 		return height + util.Constants.newLineGap;
 	}
-	
+
 	@Override
-	public int getWidth(){
-		int width = 2;		
-		for (UiGlyph uiGlyph : this.uiGlyphs){
+	public int getWidth() {
+		int width = 2;
+		for (UiGlyph uiGlyph : this.uiGlyphs) {
 			width += uiGlyph.getGlyph().getWidth();
 		}
-		
+
 		return width;
-	}	
-	
+	}
+
 	@Override
-	public void draw(Graphics graphics, int x, int y){		
+	public void draw(Graphics graphics, int x, int y) {
 		int currentLeft = x;
-		for (UiGlyph uiGlyph : this.uiGlyphs){
+		for (UiGlyph uiGlyph : this.uiGlyphs) {
 			uiGlyph.getGlyph().draw(graphics, currentLeft, y);
 			currentLeft += uiGlyph.getGlyph().getWidth() + 2;
 		}
 	}
-	
+
 	@Override
-	public void select(Graphics graphics, Color hightlightColor, Color fontColor, int x, int y){
-		this.select(graphics, hightlightColor, fontColor, x, y, 0, this.getUiGlyphs().size() - 1);
-	}	
+	public void select(Graphics graphics, Color hightlightColor,
+			Color fontColor, int x, int y) {
+		this.select(graphics, hightlightColor, fontColor, x, y, 0, this
+				.getUiGlyphs().size() - 1);
+	}
 
 	@Override
 	public void accept(IVisitor visitor) {
 		visitor.visitRow(this);
 	}
-	
-	public void select(Graphics graphics, Color hightlightColor, Color fontColor, int x, int y, int start, int end){
-		for (int i = start; i <= end; i++){
+
+	@Override
+	public void setFont(Font font) {
+	}
+
+	@Override
+	public Font getFont() {
+		return null;
+	}
+
+	public void select(Graphics graphics, Color hightlightColor,
+			Color fontColor, int x, int y, int start, int end) {
+		for (int i = start; i <= end; i++) {
 			UiGlyph uiGlyph = this.getUiGlyphs().get(i);
-			uiGlyph.getGlyph().select(graphics, hightlightColor, fontColor, uiGlyph.getPosition().x, uiGlyph.getPosition().y);
+			uiGlyph.getGlyph().select(graphics, hightlightColor, fontColor,
+					uiGlyph.getPosition().x, uiGlyph.getPosition().y);
 		}
 	}
 

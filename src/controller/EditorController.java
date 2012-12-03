@@ -29,8 +29,10 @@ import visitor.IVisitor;
 import visitor.SpellingCheckingVisitor;
 
 import command.CommandManager;
+import command.DecreaseFontSizeCommand;
 import command.DeleteCommand;
 import command.ICommand;
+import command.IncreaseFontSizeCommand;
 import command.InsertCommand;
 import command.ToggleBoldCommand;
 import command.ToggleItalicCommand;
@@ -55,7 +57,7 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 	@Override
 	public void onKeyPressed(KeyPressedEventArgs param) {
 		Glyph glyph = null;
-		ICommand cmd = null;
+		ICommand cmd = null;		
 		if (param.getKeyEvent().getKeyCode() == KeyEvent.VK_ESCAPE){
 			this.selectionRange = null;
 		}
@@ -68,6 +70,18 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 				this.selectionRange = null;
 			}
 		}
+		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() == '+'  && param.getKeyEvent().getKeyCode() == 107) {
+			int startFrom = this.getStartFrom();
+			int endAt = this.getEndAt();
+			cmd = new IncreaseFontSizeCommand(param.getGraphics(), this.document, startFrom, endAt);
+			CommandManager.getInstance().execute(cmd);
+		}
+		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() == '-'  && param.getKeyEvent().getKeyCode() == 109) {
+			int startFrom = this.getStartFrom();
+			int endAt = this.getEndAt();
+			cmd = new DecreaseFontSizeCommand(param.getGraphics(), this.document, startFrom, endAt);
+			CommandManager.getInstance().execute(cmd);
+		}		
 		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() != 'a'  && param.getKeyEvent().getKeyCode() == 65){
 			glyph = new Arrow(param.getFont());
 			this.document.insert(glyph, this.document.getChildren().size());
