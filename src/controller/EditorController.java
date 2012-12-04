@@ -7,6 +7,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.corba.se.pept.transport.ContactInfo;
+
 import model.Arrow;
 import model.Char;
 import model.Composition;
@@ -34,6 +36,8 @@ import command.DeleteCommand;
 import command.ICommand;
 import command.IncreaseFontSizeCommand;
 import command.InsertCommand;
+import command.LoadCommand;
+import command.SaveCommand;
 import command.ToggleBoldCommand;
 import command.ToggleItalicCommand;
 
@@ -181,6 +185,16 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 		for (UiGlyph uiGlyph : glyphs){
 			uiGlyph.getGlyph().select(this.graphics, Color.RED, Color.WHITE, uiGlyph.getPosition().x, uiGlyph.getPosition().y);
 		}
+	}
+	
+	public void onSaveMenuItemClick(String filePath){
+		ICommand cmd = new SaveCommand(this.document, filePath);
+		CommandManager.getInstance().execute(cmd);
+	}
+	
+	public void onLoadMenuItemClick(String filePath){
+		ICommand cmd = new LoadCommand(this.document, filePath);
+		CommandManager.getInstance().execute(cmd);
 	}
 	
 	public int getIndex(){

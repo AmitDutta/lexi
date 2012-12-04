@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import visitor.IVisitor;
 
 public abstract class Glyph {
@@ -22,4 +25,6 @@ public abstract class Glyph {
 	public abstract void setFont(Font font);
 
 	public abstract void accept(IVisitor visitor);
+	
+	public abstract Element toXmlElement(Document document);
 }

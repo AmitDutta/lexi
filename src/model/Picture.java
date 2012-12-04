@@ -8,6 +8,11 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import util.Constants;
 import visitor.IVisitor;
 
 public class Picture extends Glyph {
@@ -54,18 +59,6 @@ public class Picture extends Glyph {
 		return this.getImage().getHeight() + 15;
 	}
 
-	private BufferedImage getImage() {
-		try {
-			if (this.image == null) {
-				this.image = ImageIO.read(new File(this.fullFilePath));
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-		return this.image;
-	}
-
 	@Override
 	public void accept(IVisitor visitor) {
 		visitor.visitPicture(this);
@@ -78,5 +71,28 @@ public class Picture extends Glyph {
 	@Override
 	public Font getFont() {
 		return null;
+	}
+
+	@Override
+	public Element toXmlElement(Document document) {
+		Element picElement = document.createElement(Constants.PictureNodeName);
+
+		Attr path = document.createAttribute(Constants.FilePathAttributeName);
+		path.setValue(this.fullFilePath);
+		picElement.setAttributeNode(path);
+
+		return picElement;
+	}
+
+	private BufferedImage getImage() {
+		try {
+			if (this.image == null) {
+				this.image = ImageIO.read(new File(this.fullFilePath));
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return this.image;
 	}
 }

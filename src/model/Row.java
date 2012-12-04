@@ -6,6 +6,9 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import viewmodel.UiGlyph;
 import visitor.IVisitor;
 
@@ -116,5 +119,9 @@ public class Row extends Glyph {
 
 	public void setTop(int top) {
 		this.top = top;
+	}
+	
+	public Element toXmlElement(Document document) {
+		return null;
 	}
 }

@@ -6,6 +6,11 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import util.Constants;
 import visitor.IVisitor;
 
 public class Char extends Glyph {
@@ -20,7 +25,7 @@ public class Char extends Glyph {
 	}
 
 	@Override
-	public void draw(Graphics graphics, int x, int y) {		
+	public void draw(Graphics graphics, int x, int y) {
 		this.fontmetrics = graphics.getFontMetrics(this.font);
 		graphics.setFont(this.font);
 		graphics.drawString(Character.toString(ch), x, y);
@@ -48,7 +53,7 @@ public class Char extends Glyph {
 		if (this.fontmetrics != null) {
 			width = this.fontmetrics.stringWidth(Character.toString(this.ch));
 		}
-
+		
 		return width;
 	}
 
@@ -74,12 +79,40 @@ public class Char extends Glyph {
 
 	@Override
 	public void setFont(Font font) {
-		this.font = font;		
+		this.font = font;
 	}
 
 	@Override
 	public Font getFont() {
 		return this.font;
+	}
+
+	@Override
+	public Element toXmlElement(Document document) {
+		Element charElement = document.createElement(Constants.CharNodeName);
+		Element contentElement = document
+				.createElement(Constants.ContentString);
+		contentElement.appendChild(document.createTextNode(Character
+				.toString(this.getChar())));
+		charElement.appendChild(contentElement);
+
+		Element fontNameElement = document
+				.createElement(Constants.FontNodeName);
+
+		Attr name = document.createAttribute(Constants.FontNameAttributeName);
+		name.setValue(this.font.getName());
+		fontNameElement.setAttributeNode(name);
+
+		Attr style = document.createAttribute(Constants.FontStyleAttributeName);
+		style.setValue(Integer.toString(this.font.getStyle()));
+		fontNameElement.setAttributeNode(style);
+
+		Attr size = document.createAttribute(Constants.FontSizeAttributeName);
+		size.setValue(Integer.toString(this.font.getSize()));
+		fontNameElement.setAttributeNode(size);
+
+		charElement.appendChild(fontNameElement);
+		return charElement;
 	}
 
 	public int getCharacterCode() {

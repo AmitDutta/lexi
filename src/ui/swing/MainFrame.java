@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.FileFilter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,6 +25,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import model.Composition;
 import model.ICompositor;
@@ -55,6 +57,8 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 	private JMenuItem exitMenuItem;
 	private JMenuItem scrollMenuItem;
 	private JMenuItem spellCheckMenuItem;
+	private JMenuItem saveMenuItem;
+	private JMenuItem openMenuItem;
 	private ICompositor compositor;
 	private int x1, y1, x2, y2;
 	
@@ -76,6 +80,14 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 		
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
+		
+		this.saveMenuItem = new JMenuItem(Constants.SaveText);
+		this.saveMenuItem.addActionListener(this);
+		mnFile.add(this.saveMenuItem);
+		
+		this.openMenuItem = new JMenuItem(Constants.OpenText);
+		this.openMenuItem.addActionListener(this);
+		mnFile.add(this.openMenuItem);
 		
 		this.imageMenuItem = new JMenuItem("Insert Image");
 		this.imageMenuItem.addActionListener(this);
@@ -190,8 +202,14 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 			this.document.removeObserver(this);
 			this.dispose();
 		}
-	}	
-
+		else if (e.getSource().equals(this.saveMenuItem)) {
+			this.handleSaveMenuItemClick();
+		}
+		else if (e.getSource().equals(this.openMenuItem)) {
+			this.handleOpenMenuItemClick();
+		}
+	}
+	
 	@Override
 	public void windowOpened(WindowEvent e) {
 	}
@@ -274,6 +292,24 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 			}catch (Exception ex){
 				ex.printStackTrace();				
 			}
+		}
+	}
+	
+	private void handleSaveMenuItemClick() {
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Xml files", "xml");
+		fileChooser.setFileFilter(filter);
+		if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			this.controller.onSaveMenuItemClick(fileChooser.getSelectedFile().getAbsolutePath());
+		}
+	}
+	
+	private void handleOpenMenuItemClick() {
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Xml files", "xml");
+		fileChooser.setFileFilter(filter);
+		if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {			
+			this.controller.onLoadMenuItemClick(fileChooser.getSelectedFile().getAbsolutePath());
 		}
 	}
 	
@@ -413,7 +449,6 @@ public class MainFrame extends JFrame implements ui.IMainFrame, KeyListener, Com
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}	
 }

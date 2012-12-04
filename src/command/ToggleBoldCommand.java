@@ -31,7 +31,7 @@ public class ToggleBoldCommand implements ICommand {
 			List<Font> fonts = new ArrayList<Font>();
 			for (int i = this.startFrom; i <= this.endAt; i++) {
 				Font previousFont = this.document.getChildren().get(i)
-						.getFont();
+						.getFont();				
 				Font newFont = new Font(previousFont.getName(),
 						previousFont.getStyle() | Font.BOLD,
 						previousFont.getSize());
