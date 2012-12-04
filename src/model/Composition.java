@@ -1,10 +1,13 @@
 package model;
 
 import java.awt.Font;
-import java.awt.FontMetrics;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import util.*;
+import util.IObserver;
+import util.ISubject;
+import util.ModelChangedEventArgs;
+import util.ViewEventArgs;
 
 public class Composition implements ISubject {
 

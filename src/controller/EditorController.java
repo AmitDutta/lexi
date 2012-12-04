@@ -75,6 +75,7 @@ public class EditorController implements IEditorController, ISplleingErrorHandle
 			int endAt = this.getEndAt();
 			cmd = new IncreaseFontSizeCommand(param.getGraphics(), this.document, startFrom, endAt);
 			CommandManager.getInstance().execute(cmd);
+			
 		}
 		else if (param.getKeyEvent().isControlDown() && param.getKeyEvent().getKeyChar() == '-'  && param.getKeyEvent().getKeyCode() == 109) {
 			int startFrom = this.getStartFrom();

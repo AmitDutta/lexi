@@ -20,11 +20,8 @@ public class Char extends Glyph {
 	}
 
 	@Override
-	public void draw(Graphics graphics, int x, int y) {
-		if (this.fontmetrics == null) {
-			this.fontmetrics = graphics.getFontMetrics(this.font);
-		}
-
+	public void draw(Graphics graphics, int x, int y) {		
+		this.fontmetrics = graphics.getFontMetrics(this.font);
 		graphics.setFont(this.font);
 		graphics.drawString(Character.toString(ch), x, y);
 	}
@@ -77,7 +74,7 @@ public class Char extends Glyph {
 
 	@Override
 	public void setFont(Font font) {
-		this.font = font;
+		this.font = font;		
 	}
 
 	@Override
