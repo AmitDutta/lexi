@@ -12,7 +12,8 @@ All the following Design Patterns are implemented in this Editor;
    Implemented Commands are: Font Size Increase, Decrease, Bold, Italic, Insert, Delete
 5. Observer: Classic implementation of Observer pattern. Try to load the Editor with a same mode and multiple views. Right now it runs this way.
 6. Visitor: Full visitor pattern implementation for spell checking. It can highlight the misspelled words in red,
-7. Multiline selection by mouse drag, Glyph Highlight is done
+7. Multiline selection by mouse drag, Glyph Highlight is done.
+8. Singletone In CommandManager Class
 
 
 
